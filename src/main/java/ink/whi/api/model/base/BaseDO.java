@@ -1,5 +1,6 @@
-package ink.whi.service.meeting.repo.entity;
+package ink.whi.api.model.base;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -16,7 +17,7 @@ public class BaseDO implements Serializable {
     @Serial
     private static final long serialVersionUID = 3648012732645150344L;
 
-    @Id
+    @TableId
     private String id;
 
     private Date createTime;
