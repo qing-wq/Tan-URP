@@ -1,6 +1,7 @@
 package ink.whi.service.meeting.repo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import ink.whi.api.model.base.BaseDO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,10 +29,12 @@ public class MeetingDO extends BaseDO {
     /**
      * 开始时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date beginTime;
     /**
      * 结束时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date endTime;
     /**
      * 会议地点

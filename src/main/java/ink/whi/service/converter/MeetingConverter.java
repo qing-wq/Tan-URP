@@ -1,6 +1,7 @@
-package ink.whi.service.meeting.converter;
+package ink.whi.service.converter;
 
 import ink.whi.api.model.dto.BaseMeetingDTO;
+import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.service.meeting.repo.MeetingDO;
 import org.springframework.beans.BeanUtils;
 
@@ -21,5 +22,12 @@ public class MeetingConverter {
 
     public static List<BaseMeetingDTO> toDtoList(List<MeetingDO> list) {
         return list.stream().map(MeetingConverter::toDto).toList();
+    }
+
+    public static MeetingDO toDO(MeetingSaveReq meeting) {
+        MeetingDO meetingDO = new MeetingDO();
+        BeanUtils.copyProperties(meeting, meetingDO);
+        meetingDO.setBeginTime(meeting.getBeginTime());
+        return meetingDO;
     }
 }

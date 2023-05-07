@@ -1,6 +1,7 @@
 package ink.whi.api.model.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -25,10 +26,12 @@ public class BaseMeetingDTO implements Serializable {
     /**
      * 结束时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     /**
      * 会议地点
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private String location;
     /**
      * 组会内容

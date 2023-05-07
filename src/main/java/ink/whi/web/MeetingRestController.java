@@ -1,11 +1,13 @@
-package ink.whi.web.meeting;
+package ink.whi.web;
 
 import ink.whi.api.model.base.PageHelper;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.enums.TagTypeEnum;
 import ink.whi.api.model.exception.StatusEnum;
+import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
+import ink.whi.service.meeting.repo.MeetingDO;
 import ink.whi.service.meeting.repo.MeetingDao;
 import ink.whi.api.model.vo.ResVo;
 import lombok.extern.slf4j.Slf4j;
@@ -55,5 +57,16 @@ public class MeetingRestController extends PageHelper {
         }
         PageListVo<BaseMeetingDTO> list = meetingDao.listMeetingByTag(tag, pageParam);
         return ResVo.ok(list);
+    }
+
+    /**
+     * 保存会议
+     * @param meeting
+     * @return
+     */
+    @PostMapping(path = "save")
+    public ResVo<String> saveMeeting(@RequestBody MeetingSaveReq meeting) {
+        meetingDao.saveMeeting(meeting);
+        return ResVo.ok("ok");
     }
 }

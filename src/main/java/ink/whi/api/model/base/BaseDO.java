@@ -1,5 +1,6 @@
 package ink.whi.api.model.base;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
@@ -16,8 +17,8 @@ public class BaseDO implements Serializable {
     @Serial
     private static final long serialVersionUID = 3648012732645150344L;
 
-    @TableId
-    private String id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
     private Date createTime;
 
