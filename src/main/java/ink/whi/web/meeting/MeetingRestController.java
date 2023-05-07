@@ -2,17 +2,15 @@ package ink.whi.web.meeting;
 
 import ink.whi.api.model.base.PageHelper;
 import ink.whi.api.model.dto.BaseMeetingDTO;
+import ink.whi.api.model.enums.TagTypeEnum;
+import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
-import ink.whi.service.meeting.repo.MeetingDO;
 import ink.whi.service.meeting.repo.MeetingDao;
 import ink.whi.api.model.vo.ResVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping(path = "meeting/api")
+@RequestMapping(path = "meeting")
 public class MeetingRestController extends PageHelper {
 
     @Autowired
@@ -34,11 +32,28 @@ public class MeetingRestController extends PageHelper {
      * @return
      */
     @GetMapping(path = "list")
-    public ResVo<PageListVo<BaseMeetingDTO>> getMeeting(@RequestParam(name = "page") Long pageNum,
+    public ResVo<PageListVo<BaseMeetingDTO>> list(@RequestParam(name = "page") Long pageNum,
                                              @RequestParam(name = "pageSize") Long pageSize) {
         PageParam pageParam = buildPageParam(pageNum, pageSize);
         PageListVo<BaseMeetingDTO> list = meetingDao.listMeetings(pageParam);
         return ResVo.ok(list);
     }
 
+    /**
+     * 根据标签查询组会记录
+     * @param tag
+     * @return
+     */
+    @GetMapping(path = "tags/{tag}")
+    public ResVo<PageListVo<BaseMeetingDTO>> getTags(@PathVariable(name = "tag") Integer tag,
+                                                     @RequestParam(name = "page") Long pageNum,
+                                                     @RequestParam(name = "pageSize") Long pageSize) {
+        PageParam pageParam = buildPageParam(pageNum, pageSize);
+        TagTypeEnum type = TagTypeEnum.formCode(tag);
+        if (type == null) {
+            return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法: " + tag);
+        }
+        PageListVo<BaseMeetingDTO> list = meetingDao.listMeetingByTag(tag, pageParam);
+        return ResVo.ok(list);
+    }
 }
