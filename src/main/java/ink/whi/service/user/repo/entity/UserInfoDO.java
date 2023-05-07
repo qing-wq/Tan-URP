@@ -34,7 +34,7 @@ public class UserInfoDO extends BaseDO {
     /**
      * 用户角色
      */
-    private String userRole;
+    private Integer userRole;
     /**
      * 年级
      */

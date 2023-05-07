@@ -1,4 +1,4 @@
-package ink.whi.web.user;
+package ink.whi.web;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
