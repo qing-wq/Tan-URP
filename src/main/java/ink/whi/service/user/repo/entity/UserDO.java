@@ -29,5 +29,5 @@ public class UserDO extends BaseDO {
     /**
      * 是否删除
      */
-    private String deleted;
+    private Integer deleted;
 }

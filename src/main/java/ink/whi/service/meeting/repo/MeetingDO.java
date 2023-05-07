@@ -1,4 +1,4 @@
-package ink.whi.service.meeting.repo.entity;
+package ink.whi.service.meeting.repo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import ink.whi.api.model.base.BaseDO;
@@ -17,7 +17,7 @@ import java.util.Date;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("meeting")
-public class MeetingDO extends BaseDO{
+public class MeetingDO extends BaseDO {
 
     @Serial
     private static final long serialVersionUID = -8915384579444426238L;
@@ -45,4 +45,8 @@ public class MeetingDO extends BaseDO{
      * 1-大一 2-大二 3-大三 4-大四 0-研究生
      */
     private Integer tag;
+    /**
+     * 是否删除
+     */
+    private Integer deleted;
 }

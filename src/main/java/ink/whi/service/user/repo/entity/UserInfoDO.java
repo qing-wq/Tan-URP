@@ -39,4 +39,8 @@ public class UserInfoDO extends BaseDO {
      * 年级
      */
     private String grade;
+    /**
+     * 是否删除
+     */
+    private Integer deleted;
 }
