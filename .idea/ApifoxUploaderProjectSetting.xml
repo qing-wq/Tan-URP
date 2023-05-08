@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ApifoxUploaderProjectSetting">
     <option name="apifoxAccessToken" value="APS-4JgLknVSy4eTYldQHSPW9lAkE5YMGH8U" />
-    <option name="apifoxApiOverwriteMode" value="智能合并" />
+    <option name="apifoxApiOverwriteMode" value="保留两者" />
     <option name="apifoxProjectIds">
       <array>
         <option value="SAI-Forum:2654035" />

@@ -4,6 +4,8 @@ import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.dto.FileDTO;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 会议详情
  * @author: qing
@@ -14,5 +16,5 @@ public class MeetingDetailVo {
 
     private BaseMeetingDTO meetingDTO;
 
-    private FileDTO fileDTO;
+    private List<FileDTO> fileList;
 }
