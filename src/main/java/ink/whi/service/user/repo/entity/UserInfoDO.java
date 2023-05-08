@@ -22,7 +22,7 @@ public class UserInfoDO extends BaseDO {
     /**
      * 用户ID
      */
-    private String userId;
+    private Long userId;
     /**
      * 姓名
      */

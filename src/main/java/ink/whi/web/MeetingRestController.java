@@ -7,14 +7,13 @@ import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
-import ink.whi.service.meeting.repo.MeetingDO;
+import ink.whi.api.permission.Permission;
+import ink.whi.api.permission.UserRole;
 import ink.whi.service.meeting.repo.MeetingDao;
 import ink.whi.api.model.vo.ResVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 会议接口
@@ -67,6 +66,18 @@ public class MeetingRestController extends PageHelper {
     @PostMapping(path = "save")
     public ResVo<String> saveMeeting(@RequestBody MeetingSaveReq meeting) {
         meetingDao.saveMeeting(meeting);
+        return ResVo.ok("ok");
+    }
+
+    /**
+     * 会议删除接口
+     * @param meetingId
+     * @return
+     */
+    @Permission(role = UserRole.LEADER)
+    @GetMapping(path = "delete/{meetingId}")
+    public ResVo<String> deleteMeeting(@PathVariable(name = "meetingId") Long meetingId) {
+        meetingDao.deleteMeeting(meetingId);
         return ResVo.ok("ok");
     }
 }

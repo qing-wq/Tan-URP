@@ -11,7 +11,8 @@ import java.util.Objects;
 @Getter
 public enum RoleEnum {
     NORMAL(0, "普通用户"),
-    ADMIN(1, "超级用户"),
+    LEADER(1, "组长"),
+    TAN(2, "谭sir")
     ;
 
     private int role;
@@ -23,10 +24,11 @@ public enum RoleEnum {
     }
 
     public static String role(Integer roleId) {
-        if (Objects.equals(roleId, 1)) {
-            return ADMIN.name();
-        } else {
-            return NORMAL.name();
+        for (RoleEnum value : RoleEnum.values()) {
+            if (Objects.equals(roleId, value.getRole())) {
+                return value.getDesc();
+            }
         }
+        return null;
     }
 }
