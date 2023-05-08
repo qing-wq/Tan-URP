@@ -1,6 +1,6 @@
-package ink.whi.web;
+package ink.whi.web.rest;
 
-import ink.whi.api.model.base.PageHelper;
+import ink.whi.api.model.dto.base.PageHelper;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.enums.TagTypeEnum;
 import ink.whi.api.model.exception.StatusEnum;
@@ -9,8 +9,11 @@ import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
 import ink.whi.api.permission.Permission;
 import ink.whi.api.permission.UserRole;
+import ink.whi.service.converter.MeetingConverter;
+import ink.whi.service.meeting.repo.MeetingDO;
 import ink.whi.service.meeting.repo.MeetingDao;
 import ink.whi.api.model.vo.ResVo;
+import ink.whi.web.vo.MeetingDetailVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -64,9 +67,9 @@ public class MeetingRestController extends PageHelper {
      * @return
      */
     @PostMapping(path = "save")
-    public ResVo<String> saveMeeting(@RequestBody MeetingSaveReq meeting) {
-        meetingDao.saveMeeting(meeting);
-        return ResVo.ok("ok");
+    public ResVo<Long> saveMeeting(@RequestBody MeetingSaveReq meeting) {
+        Long meetingId = meetingDao.saveMeeting(meeting);
+        return ResVo.ok(meetingId);
     }
 
     /**
@@ -79,5 +82,15 @@ public class MeetingRestController extends PageHelper {
     public ResVo<String> deleteMeeting(@PathVariable(name = "meetingId") Long meetingId) {
         meetingDao.deleteMeeting(meetingId);
         return ResVo.ok("ok");
+    }
+
+    @GetMapping(path = "detail/{meetingId}")
+    public ResVo<MeetingDetailVo> detail(@PathVariable(name = "meetingId") String meetingId) {
+        MeetingDetailVo vo = new MeetingDetailVo();
+        MeetingDO meeting = meetingDao.getById(meetingId);
+        BaseMeetingDTO dto = MeetingConverter.toDto(meeting);
+        vo.setMeetingDTO(dto);
+
+        return ResVo.ok(vo);
     }
 }

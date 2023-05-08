@@ -1,6 +1,5 @@
 package ink.whi.api.model.dto;
 
-import ink.whi.api.model.base.BaseDTO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

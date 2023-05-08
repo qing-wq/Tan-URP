@@ -1,4 +1,4 @@
-package ink.whi.web;
+package ink.whi.web.rest;
 
 import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.dto.BaseMeetingDTO;

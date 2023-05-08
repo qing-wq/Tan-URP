@@ -3,7 +3,6 @@ package ink.whi.web.hook.interceptor;
 import com.google.common.collect.Maps;
 import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.exception.StatusEnum;
-import ink.whi.api.model.vo.ResVo;
 import ink.whi.api.permission.Permission;
 import ink.whi.api.permission.UserRole;
 import lombok.extern.slf4j.Slf4j;

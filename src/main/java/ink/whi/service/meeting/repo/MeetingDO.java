@@ -2,7 +2,7 @@ package ink.whi.service.meeting.repo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import ink.whi.api.model.base.BaseDO;
+import ink.whi.api.model.dto.base.BaseDO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;

@@ -1,7 +1,7 @@
 package ink.whi.service.user.repo.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import ink.whi.api.model.base.BaseDO;
+import ink.whi.api.model.dto.base.BaseDO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,4 +1,4 @@
-package ink.whi.api.model.base;
+package ink.whi.api.model.dto.base;
 
 import ink.whi.api.model.vo.PageParam;
 

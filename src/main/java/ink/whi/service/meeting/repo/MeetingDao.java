@@ -2,7 +2,7 @@ package ink.whi.service.meeting.repo;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import ink.whi.api.model.base.BaseDO;
+import ink.whi.api.model.dto.base.BaseDO;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.enums.YesOrNoEnum;
 import ink.whi.api.model.exception.BusinessException;
@@ -59,13 +59,14 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
      * 保存或更新会议
      * @param meeting
      */
-    public void saveMeeting(MeetingSaveReq meeting) {
+    public Long saveMeeting(MeetingSaveReq meeting) {
         MeetingDO meetingDO = MeetingConverter.toDO(meeting);
         if (meetingDO.getId() == null) {
             save(meetingDO);
         } else {
             updateById(meetingDO);
         }
+        return meetingDO.getId();
     }
 
     /**
