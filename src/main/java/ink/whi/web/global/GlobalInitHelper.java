@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class GlobalInitHelper {
 
-    private static final String SESSION_KEY = "tan-session";
+    public static final String SESSION_KEY = "tan-session";
 
     @Autowired
     private UserDao userDao;
