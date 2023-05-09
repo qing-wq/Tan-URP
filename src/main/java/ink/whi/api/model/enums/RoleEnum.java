@@ -23,10 +23,10 @@ public enum RoleEnum {
         this.desc = desc;
     }
 
-    public static Integer role(Integer roleId) {
+    public static String role(Integer roleId) {
         for (RoleEnum value : RoleEnum.values()) {
             if (Objects.equals(roleId, value.getRole())) {
-                return value.getRole();
+                return value.name();
             }
         }
         return null;

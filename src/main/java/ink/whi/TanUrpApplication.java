@@ -22,7 +22,7 @@ public class TanUrpApplication implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(globalInterceptor).addPathPatterns("/**").excludePathPatterns("/login");
+        registry.addInterceptor(globalInterceptor).addPathPatterns("/**").excludePathPatterns("/user/login");
     }
 
     public static void main(String[] args) {

@@ -3,6 +3,7 @@ package ink.whi.service.converter;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.enums.RoleEnum;
 import ink.whi.service.user.repo.entity.UserInfoDO;
+import ink.whi.web.vo.UserSaveReq;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -21,5 +22,11 @@ public class UserConverter {
         BeanUtils.copyProperties(info, user);
         user.setRole(RoleEnum.role(info.getUserRole()));
         return user;
+    }
+
+    public static UserInfoDO toDo(UserSaveReq req) {
+        UserInfoDO userInfoDO = new UserInfoDO();
+        BeanUtils.copyProperties(req, userInfoDO);
+        return userInfoDO;
     }
 }

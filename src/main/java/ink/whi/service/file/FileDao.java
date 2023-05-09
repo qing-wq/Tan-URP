@@ -55,6 +55,20 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
         return buildListFileDTO(list);
     }
 
+    /**
+     * 获取用户上传的文件
+     * @param userId
+     * @return
+     */
+    public List<FileDTO> listFileByUserId(Long userId) {
+        List<FileDO> list = lambdaQuery().eq(FileDO::getUserId, userId)
+                .eq(FileDO::getDeleted, YesOrNoEnum.NO.getCode())
+                .orderByDesc(BaseDO::getCreateTime)
+                .list();
+        return buildListFileDTO(list);
+    }
+
+
     public List<FileDTO> buildListFileDTO(List<FileDO> list) {
         return list.stream().map(this::fillFileInfo).toList();
     }
@@ -68,18 +82,5 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
         FileDTO dto = FileConverter.toDto(file);
         dto.setUserInfo(userDao.queryBasicUserInfo(file.getUserId()));
         return dto;
-    }
-
-    /**
-     * 获取用户上传的文件
-     * @param userId
-     * @return
-     */
-    public List<FileDTO> listFileByUserId(Long userId) {
-        List<FileDO> list = lambdaQuery().eq(FileDO::getUserId, userId)
-                .eq(FileDO::getDeleted, YesOrNoEnum.NO.getCode())
-                .orderByDesc(BaseDO::getCreateTime)
-                .list();
-        return buildListFileDTO(list);
     }
 }

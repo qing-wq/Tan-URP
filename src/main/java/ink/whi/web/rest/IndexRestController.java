@@ -58,28 +58,4 @@ public class IndexRestController {
         return ResVo.ok(vo);
     }
 
-    /**
-     * 登录
-     * @param request
-     * @param response
-     * @return
-     */
-    @PostMapping(path = "login")
-    public ResVo<BaseUserInfoDTO> login(HttpServletRequest request,
-                                        HttpServletResponse response) {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-            return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "用户名或密码不能为空");
-        }
-        BaseUserInfoDTO info = userDao.passwordLogin(username, password);
-        // 签发token
-        String token = JwtUtil.createToken(info.getUserId());
-        if (StringUtils.isNotBlank(token)) {
-            response.addCookie(new Cookie(GlobalInitHelper.SESSION_KEY, token));
-            return ResVo.ok(info);
-        } else {
-            return ResVo.fail(StatusEnum.LOGIN_FAILED_MIXED, "登录失败，请重试");
-        }
-    }
 }

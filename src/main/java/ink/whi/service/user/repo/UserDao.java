@@ -7,12 +7,15 @@ import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.enums.YesOrNoEnum;
 import ink.whi.api.model.exception.BusinessException;
 import ink.whi.api.model.exception.StatusEnum;
+import ink.whi.api.util.SpringUtil;
 import ink.whi.api.util.UserPwdEncoder;
 import ink.whi.service.converter.UserConverter;
 import ink.whi.service.user.repo.entity.UserDO;
 import ink.whi.service.user.repo.entity.UserInfoDO;
+import ink.whi.web.vo.UserSaveReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author: qing
@@ -55,5 +58,18 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         wrapper.eq(UserDO::getUserName, username)
                 .eq(UserDO::getDeleted, YesOrNoEnum.NO.getCode());
         return userMapper.selectOne(wrapper);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Long saveUser(UserSaveReq req) {
+        UserDO user = new UserDO();
+        user.setUserName(req.getStudentId());
+        user.setPassWord(req.getPassword() == null ? SpringUtil.getConfig("password.default.normal") : req.getPassword());
+        userMapper.insert(user);
+
+        UserInfoDO userInfo = UserConverter.toDo(req);
+        userInfo.setUserId(user.getId());
+        save(userInfo);
+        return userInfo.getId();
     }
 }
