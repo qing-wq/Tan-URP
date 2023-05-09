@@ -2,6 +2,7 @@ package ink.whi.service.file;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ink.whi.api.model.dto.FileDTO;
+import ink.whi.api.model.dto.base.BaseDO;
 import ink.whi.api.model.enums.YesOrNoEnum;
 import ink.whi.service.converter.FileConverter;
 import ink.whi.service.user.repo.UserDao;
@@ -38,7 +39,7 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
         file.setDownload(0);
         file.setCreateTime(new Date());
         save(file);
-        return fillFileInfo(file, userId);
+        return fillFileInfo(file);
     }
 
     /**
@@ -49,24 +50,36 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
     public List<FileDTO> listFileByMeetingId(String meetingId) {
         List<FileDO> list = lambdaQuery().eq(FileDO::getMeetId, meetingId)
                 .eq(FileDO::getDeleted, YesOrNoEnum.NO.getCode())
+                .orderByDesc(BaseDO::getCreateTime)
                 .list();
         return buildListFileDTO(list);
     }
 
     public List<FileDTO> buildListFileDTO(List<FileDO> list) {
-        return list.stream().map(s -> fillFileInfo(s, s.getUserId())).toList();
+        return list.stream().map(this::fillFileInfo).toList();
     }
 
     /**
      * 补充上传文件的用户信息
      * @param file
-     * @param userId
      * @return
      */
-    public FileDTO fillFileInfo(FileDO file, Long userId) {
+    public FileDTO fillFileInfo(FileDO file) {
         FileDTO dto = FileConverter.toDto(file);
-        dto.setUserInfo(userDao.queryBasicUserInfo(userId));
+        dto.setUserInfo(userDao.queryBasicUserInfo(file.getUserId()));
         return dto;
     }
 
+    /**
+     * 获取用户上传的文件
+     * @param userId
+     * @return
+     */
+    public List<FileDTO> listFileByUserId(Long userId) {
+        List<FileDO> list = lambdaQuery().eq(FileDO::getUserId, userId)
+                .eq(FileDO::getDeleted, YesOrNoEnum.NO.getCode())
+                .orderByDesc(BaseDO::getCreateTime)
+                .list();
+        return buildListFileDTO(list);
+    }
 }
