@@ -11,7 +11,6 @@ import ink.whi.api.permission.UserRole;
 import ink.whi.api.util.JwtUtil;
 import ink.whi.service.file.FileDao;
 import ink.whi.service.user.repo.UserDao;
-import ink.whi.service.user.repo.entity.UserInfoDO;
 import ink.whi.web.global.GlobalInitHelper;
 import ink.whi.web.vo.UserDetailVo;
 import ink.whi.web.vo.UserSaveReq;
@@ -80,16 +79,12 @@ public class UserRestController {
     }
 
     /**
-     * 创建/更新用户，leader以上权限
+     * 创建用户
      * @return
      */
     @Permission(role = UserRole.LEADER)
     @PostMapping(path = "save")
     public ResVo<String> saveUser(@RequestBody UserSaveReq req) {
-        String role = RoleEnum.role(req.getUserRole());
-        if (role == null || Objects.equals(role, "TAN")) {
-            throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + req.getUserRole());
-        }
         userDao.saveUser(req);
         return ResVo.ok("ok");
     }

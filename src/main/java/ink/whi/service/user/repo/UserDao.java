@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
+import ink.whi.api.model.enums.RoleEnum;
 import ink.whi.api.model.enums.YesOrNoEnum;
 import ink.whi.api.model.exception.BusinessException;
 import ink.whi.api.model.exception.StatusEnum;
@@ -16,6 +17,8 @@ import ink.whi.web.vo.UserSaveReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 /**
  * @author: qing
@@ -45,11 +48,9 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         if (user == null) {
             throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, username);
         }
-
         if (!userPwdEncoder.match(password, user.getPassWord())) {
             throw BusinessException.newInstance(StatusEnum.USER_PWD_ERROR);
         }
-
         return queryBasicUserInfo(user.getId());
     }
 
@@ -63,8 +64,12 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
     @Transactional(rollbackFor = Exception.class)
     public Long saveUser(UserSaveReq req) {
         UserDO user = new UserDO();
-        user.setUserName(req.getStudentId());
-        user.setPassWord(req.getPassword() == null ? SpringUtil.getConfig("password.default.normal") : req.getPassword());
+        String role = RoleEnum.role(req.getUserRole());
+        if (role == null || Objects.equals(role, RoleEnum.TAN.name())) {
+            throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + req.getUserRole());
+        }
+        user.setUserName(req.getUserName() == null ? req.getStudentId() : req.getUserName());
+        user.setPassWord(req.getPassword() == null ? SpringUtil.getConfig("password.default." + role.toLowerCase()) : req.getPassword());
         userMapper.insert(user);
 
         UserInfoDO userInfo = UserConverter.toDo(req);

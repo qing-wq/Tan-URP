@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @RestController
 @RequestMapping(path = "file")
-public class FileUploadRestController {
+public class FileRestController {
 
     @Value("${file.upload}")
     private String uploadPath;

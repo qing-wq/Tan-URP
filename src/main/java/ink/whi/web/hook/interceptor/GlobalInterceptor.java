@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * @author: qing
@@ -49,7 +50,7 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
 
             // Leader
-            if (permission.role() == UserRole.LEADER && ReqInfoContext.getReqInfo().getUser().getRole() == RoleEnum.NORMAL.getRole()) {
+            if (permission.role() == UserRole.LEADER && Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole(), RoleEnum.NORMAL.name())) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR)));
@@ -58,7 +59,7 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
 
             // Admin
-            if (permission.role() == UserRole.ADMIN && !(ReqInfoContext.getReqInfo().getUser().getRole() == RoleEnum.TAN.getRole())) {
+            if (permission.role() == UserRole.ADMIN && !Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole(), RoleEnum.TAN.name())) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR)));
