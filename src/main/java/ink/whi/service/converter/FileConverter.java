@@ -7,6 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author: qing
  * @Date: 2023/5/8
@@ -18,5 +20,9 @@ public class FileConverter {
         BeanUtils.copyProperties(fileDO, dto);
         dto.setFileId(fileDO.getId());
         return dto;
+    }
+
+    public static List<FileDTO> toDtoList(List<FileDO> list) {
+        return list.stream().map(FileConverter::toDto).toList();
     }
 }

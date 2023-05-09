@@ -13,8 +13,13 @@ import java.util.List;
  */
 @Data
 public class MeetingDetailVo {
-
+    /**
+     * 会议信息
+     */
     private BaseMeetingDTO meetingDTO;
 
+    /**
+     * 文件列表
+     */
     private List<FileDTO> fileList;
 }

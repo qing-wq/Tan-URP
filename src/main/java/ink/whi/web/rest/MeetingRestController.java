@@ -1,8 +1,10 @@
 package ink.whi.web.rest;
 
+import ink.whi.api.model.dto.FileDTO;
 import ink.whi.api.model.dto.base.PageHelper;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.enums.TagTypeEnum;
+import ink.whi.api.model.exception.BusinessException;
 import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.api.model.vo.PageListVo;
@@ -10,6 +12,7 @@ import ink.whi.api.model.vo.PageParam;
 import ink.whi.api.permission.Permission;
 import ink.whi.api.permission.UserRole;
 import ink.whi.service.converter.MeetingConverter;
+import ink.whi.service.file.FileDao;
 import ink.whi.service.meeting.repo.MeetingDO;
 import ink.whi.service.meeting.repo.MeetingDao;
 import ink.whi.api.model.vo.ResVo;
@@ -17,6 +20,8 @@ import ink.whi.web.vo.MeetingDetailVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 会议接口
@@ -30,6 +35,9 @@ public class MeetingRestController extends PageHelper {
 
     @Autowired
     private MeetingDao meetingDao;
+
+    @Autowired
+    private FileDao fileDao;
 
     /**
      * 会议列表分页接口
@@ -84,13 +92,23 @@ public class MeetingRestController extends PageHelper {
         return ResVo.ok("ok");
     }
 
+    /**
+     * 会议详情页接口
+     * @param meetingId
+     * @return
+     */
     @GetMapping(path = "detail/{meetingId}")
     public ResVo<MeetingDetailVo> detail(@PathVariable(name = "meetingId") String meetingId) {
         MeetingDetailVo vo = new MeetingDetailVo();
         MeetingDO meeting = meetingDao.getById(meetingId);
+        if (meeting == null) {
+            throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, "会议不存在");
+        }
         BaseMeetingDTO dto = MeetingConverter.toDto(meeting);
         vo.setMeetingDTO(dto);
 
+        List<FileDTO> fileList = fileDao.listFileByMeetingId(meetingId);
+        vo.setFileList(fileList);
         return ResVo.ok(vo);
     }
 }

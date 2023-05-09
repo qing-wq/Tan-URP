@@ -38,4 +38,8 @@ public class FileDO extends BaseDO {
      * 下载次数
      */
     private Integer download;
+    /**
+     * 是否删除
+     */
+    private Integer deleted;
 }
