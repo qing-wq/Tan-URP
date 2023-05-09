@@ -13,11 +13,11 @@ public enum UserRole {
      */
     ADMIN,
     /**
-     * 登录
+     * 组长
      */
     LEADER,
     /**
-     * 全部用户
+     * 登录
      */
     ALL
 }

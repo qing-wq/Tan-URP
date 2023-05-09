@@ -2,6 +2,7 @@ package ink.whi.web.hook.interceptor;
 
 import com.google.common.collect.Maps;
 import ink.whi.api.model.context.ReqInfoContext;
+import ink.whi.api.model.enums.RoleEnum;
 import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.permission.Permission;
 import ink.whi.api.permission.UserRole;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author: qing
- * @Date: 2023/4/27
+ * @Date: 2023/5/7
  */
 @Slf4j
 @Component
@@ -31,23 +32,35 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
                 permission = handlerMethod.getBeanType().getAnnotation(Permission.class);
             }
 
+            // 未登录
+            if (ReqInfoContext.getReqInfo().getUserId() == null) {
+                response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.getWriter().println(Maps.newHashMap().put(StatusEnum.FORBID_ERROR_MIXED, "请登录"));
+                response.getWriter().flush();
+                return false;
+            }
+
             // ALL
             if (permission == null || permission.role() == UserRole.ALL) {
                 return true;
             }
 
             // Leader
-            if (permission.role() == UserRole.LEADER && ReqInfoContext.getReqInfo().getUserId() == null) {
+            if (permission.role() == UserRole.LEADER && ReqInfoContext.getReqInfo().getUser().getRole() == RoleEnum.NORMAL.getRole()) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
-                response.getWriter().println(Maps.newHashMap().put(StatusEnum.FORBID_ERROR_MIXED, "没有权限"));
+                response.getWriter().println(Maps.newHashMap().put(StatusEnum.FORBID_ERROR, "没有权限"));
                 response.getWriter().flush();
                 return false;
             }
 
             // Admin
-            if (permission.role() == UserRole.ADMIN && !UserRole.ADMIN.name().equalsIgnoreCase(ReqInfoContext.getReqInfo().getUser().getRole())) {
+            if (permission.role() == UserRole.ADMIN && !(ReqInfoContext.getReqInfo().getUser().getRole() == RoleEnum.TAN.getRole())) {
+                response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.getWriter().println(Maps.newHashMap().put(StatusEnum.FORBID_ERROR, "没有权限"));
+                response.getWriter().flush();
                 return false;
             }
         }

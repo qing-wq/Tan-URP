@@ -30,6 +30,7 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
         file.setUserId(userId);
         file.setMeetId(meetingId);
         file.setFilePath(filePath);
+        file.setDownload(0);
         save(file);
         FileDTO dto = FileConverter.toDto(file);
         dto.setUserInfo(userDao.queryBasicUserInfo(userId));

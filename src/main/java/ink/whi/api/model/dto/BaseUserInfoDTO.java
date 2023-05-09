@@ -32,7 +32,7 @@ public class BaseUserInfoDTO implements Serializable {
     /**
      * 用户角色
      */
-    private String role;
+    private Integer role;
     /**
      * 年级
      */

@@ -34,4 +34,8 @@ public class FileDO extends BaseDO {
      * 会议ID
      */
     private Long meetId;
+    /**
+     * 下载次数
+     */
+    private Integer download;
 }

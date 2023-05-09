@@ -16,6 +16,7 @@ public class FileConverter {
     public static FileDTO toDto(FileDO fileDO) {
         FileDTO dto = new FileDTO();
         BeanUtils.copyProperties(fileDO, dto);
+        dto.setFileId(fileDO.getId());
         return dto;
     }
 }

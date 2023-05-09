@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author: qing
@@ -14,6 +15,14 @@ public class FileDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -8392092851005161008L;
+    /**
+     * 文件ID
+     */
+    private Long fileId;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
     /**
      * 文件名
      */
@@ -26,6 +35,10 @@ public class FileDTO implements Serializable {
      * 会议ID
      */
     private Long meetId;
+    /**
+     * 下载次数
+     */
+    private Integer download;
     /**
      * 用户信息
      */
