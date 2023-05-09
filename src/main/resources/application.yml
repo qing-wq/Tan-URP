@@ -3,10 +3,12 @@ server:
   servlet:
     session:
       timeout: 5m # 设置session的有效期为五分钟
+  tomcat:
+    basedir: /tmp/tomcat
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/${database.name}?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/urp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: root
 #  redis:
@@ -19,3 +21,17 @@ spring:
 
 database:
   name: urp
+
+security:
+  salt: tan-urp
+
+jwt:
+  key: Tan-SAI
+
+file:
+  upload: /tmp/tan-urp/
+
+password:
+  default:
+    normal: root
+    leader: root
