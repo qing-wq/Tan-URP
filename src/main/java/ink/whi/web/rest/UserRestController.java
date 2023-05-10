@@ -15,10 +15,16 @@ import ink.whi.web.global.GlobalInitHelper;
 import ink.whi.web.vo.UserDetailVo;
 import ink.whi.web.vo.UserSaveReq;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.http.SameSiteCookies;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+
+import org.springframework.boot.web.server.Cookie.SameSite;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -26,6 +32,7 @@ import java.util.Objects;
 
 /**
  * 用户接口
+ *
  * @author: qing
  * @Date: 2023/5/7
  */
@@ -39,6 +46,7 @@ public class UserRestController {
 
     /**
      * 登录
+     *
      * @param request
      * @param response
      * @return
@@ -55,7 +63,9 @@ public class UserRestController {
         // 签发token
         String token = JwtUtil.createToken(info.getUserId());
         if (StringUtils.isNotBlank(token)) {
-            response.addCookie(new Cookie(GlobalInitHelper.SESSION_KEY, token));
+            Cookie cookie = new Cookie(GlobalInitHelper.SESSION_KEY, token);
+            cookie.setPath("/");
+            response.addCookie(cookie);
             return ResVo.ok(info);
         } else {
             return ResVo.fail(StatusEnum.LOGIN_FAILED_MIXED, "登录失败，请重试");
@@ -64,6 +74,7 @@ public class UserRestController {
 
     /**
      * 用户详情接口
+     *
      * @param userId
      * @return
      */
@@ -80,6 +91,7 @@ public class UserRestController {
 
     /**
      * 创建用户
+     *
      * @return
      */
     @Permission(role = UserRole.LEADER)
