@@ -2,6 +2,7 @@ package ink.whi.service.meeting.repo;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.dto.base.BaseDO;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.enums.YesOrNoEnum;
@@ -11,6 +12,8 @@ import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
 import ink.whi.service.converter.MeetingConverter;
+import ink.whi.service.user.repo.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +24,9 @@ import java.util.List;
  */
 @Repository
 public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
+    @Autowired
+    private UserDao userDao;
+
     /**
      * 查询全部meeting
      * @param pageParam
@@ -29,12 +35,23 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
     public PageListVo<BaseMeetingDTO> listMeetings(PageParam pageParam) {
         List<MeetingDO> list = lambdaQuery().eq(MeetingDO::getDeleted, YesOrNoEnum.NO.getCode())
                 .last(PageParam.getLimitSql(pageParam))
-                .orderByDesc(BaseDO::getCreateTime)
+                .orderByDesc(MeetingDO::getBeginTime)
                 .list();
         if (CollectionUtils.isEmpty(list)) {
             return PageListVo.emptyVo();
         }
-        return PageListVo.newVo(MeetingConverter.toDtoList(list), pageParam.getPageSize());
+        return PageListVo.newVo(buildMeetingDto(list), pageParam.getPageSize());
+    }
+
+    private List<BaseMeetingDTO> buildMeetingDto(List<MeetingDO> list) {
+        return list.stream().map(this::fillMeetingDto).toList();
+    }
+
+    private BaseMeetingDTO fillMeetingDto(MeetingDO meetingDO) {
+        BaseMeetingDTO dto = MeetingConverter.toDto(meetingDO);
+        BaseUserInfoDTO user = userDao.queryBasicUserInfo(meetingDO.getPublisher());
+        dto.setPublisher(user.getUserInfoName());
+        return dto;
     }
 
     /**

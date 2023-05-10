@@ -16,6 +16,10 @@ public class BaseMeetingDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 8517593099569358555L;
     /**
+     * 业务主键
+     */
+    private Long meetingId;
+    /**
      * 组会名称
      */
     private String meetName;
@@ -38,7 +42,15 @@ public class BaseMeetingDTO implements Serializable {
      */
     private String content;
     /**
+     * 会议主题
+     */
+    private String subject;
+    /**
      * 1-大一 2-大二 3-大三 4-大四 0-研究生
      */
     private Integer tag;
+    /**
+     * 发表人姓名
+     */
+    private String publisher;
 }

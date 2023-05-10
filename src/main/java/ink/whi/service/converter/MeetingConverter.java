@@ -3,8 +3,11 @@ package ink.whi.service.converter;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.service.meeting.repo.MeetingDO;
+import ink.whi.service.user.repo.UserDao;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -17,6 +20,7 @@ public class MeetingConverter {
     public static BaseMeetingDTO toDto(MeetingDO meetingDO) {
         BaseMeetingDTO dto = new BaseMeetingDTO();
         BeanUtils.copyProperties(meetingDO, dto);
+        dto.setMeetingId(meetingDO.getId());
         return dto;
     }
 

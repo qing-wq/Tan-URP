@@ -45,9 +45,17 @@ public class MeetingDO extends BaseDO {
      */
     private String content;
     /**
+     * 会议主题
+     */
+    private String subject;
+    /**
      * 1-大一 2-大二 3-大三 4-大四 0-研究生
      */
     private Integer tag;
+    /**
+     * 发表人ID
+     */
+    private Long publisher;
     /**
      * 是否删除
      */
