@@ -36,7 +36,7 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
 
             // 未登录
-            if (ReqInfoContext.getReqInfo().getUserId() == null) {
+            if (ReqInfoContext.getReqInfo() == null || ReqInfoContext.getReqInfo().getUserId() == null) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR_MIXED, "请登录")));

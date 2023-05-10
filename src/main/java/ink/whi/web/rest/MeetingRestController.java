@@ -74,6 +74,7 @@ public class MeetingRestController extends PageHelper {
      * @param meeting
      * @return
      */
+    @Permission(role = UserRole.LEADER)
     @PostMapping(path = "save")
     public ResVo<Long> saveMeeting(@RequestBody MeetingSaveReq meeting) {
         Long meetingId = meetingDao.saveMeeting(meeting);

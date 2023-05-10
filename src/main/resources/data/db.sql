@@ -39,6 +39,7 @@ CREATE TABLE file
     `user_id`     INT          NOT NULL DEFAULT 0 COMMENT '用户ID',
     `file_path`   VARCHAR(255) NOT NULL DEFAULT '' COMMENT '文件路径',
     `meet_id`     INT          NOT NULL DEFAULT 0 COMMENT '组会ID',
+    `download`    INT(4)       NOT NULL DEFAULT 0 COMMENT '下载次数',
     `deleted`     tinyint      NOT NULL DEFAULT 0 COMMENT '是否删除',
     PRIMARY KEY (id)
 ) COMMENT = 'file';
@@ -51,7 +52,7 @@ CREATE TABLE user_info
     `user_id`        INT          NOT NULL DEFAULT 0 COMMENT '用户ID',
     `user_info_name` VARCHAR(255) NOT NULL COMMENT '姓名',
     `student_id`     VARCHAR(255) NOT NULL COMMENT '学号',
-    `user_role`      VARCHAR(255) NOT NULL COMMENT '用户角色',
+    user_role        INT(4)       NOT NULL DEFAULT 0 NOT NULL COMMENT '0-普通用户 1-超级管理员',
     `grade`          VARCHAR(255) NOT NULL COMMENT '年级',
     `deleted`        tinyint      NOT NULL DEFAULT 0 COMMENT '是否删除',
     PRIMARY KEY (id)
@@ -68,14 +69,7 @@ CREATE TABLE project
     PRIMARY KEY (id)
 ) COMMENT = '';
 
-show create table urp.meeting;
-use urp;
-INSERT INTO `meeting` (meet_name, begin_time, end_time, location, content, tag, deleted)
-VALUES ('gC4S1', '2018-04-03 23:05:38', '2018-04-03 08:11:47', '实训楼319', 'NBk2j', '1', '1'),
-       ('klHqL', '2018-04-01 09:03:39', '2018-04-03 07:22:49', '实训楼217', 'UA5su', '4', '1'),
-       ('8MvbZ', '2018-04-02 20:15:06', '2018-04-03 21:36:04', '实训楼228', 'fQtoS', '5', '1');
 
-INSERT INTO `meeting` (meet_name, begin_time, end_time, location, content, tag, deleted)
-VALUES ('OoIft', '2018-04-01 23:17:58', '2018-04-02 18:50:25', '实训楼402', 'ubTDE', '2', '1'),
-       ('GG78T', '2018-04-01 08:43:16', '2018-04-01 23:00:02', '实训楼402', 'Ewxdi', '1', '1'),
-       ('QmV8V', '2018-04-02 18:53:31', '2018-04-03 02:11:36', '实训楼217', 'BqYvN', '2', '1');
+insert INTO user (user_name, pass_word) value ('admin', '478fa1854493035cf4c8af4f213fba42');
+insert into user_info (user_info_name, student_id, grade, user_role)
+values ('谭老师', '', '', 2);
