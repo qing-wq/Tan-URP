@@ -46,6 +46,14 @@ public class MeetingSaveReq implements Serializable {
      */
     private String content;
     /**
+     * 主题
+     */
+    private String subject;
+    /**
+     * 发表人
+     */
+    private String publisher;
+    /**
      * 1-大一 2-大二 3-大三 4-大四 0-研究生
      */
     private Integer tag;

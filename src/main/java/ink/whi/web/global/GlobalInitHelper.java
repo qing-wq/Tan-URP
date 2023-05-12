@@ -50,6 +50,7 @@ public class GlobalInitHelper {
                     reqInfo.setUserId(user.getUserId());
                     reqInfo.setUser(user);
                 }
+                break;
             }
         }
     }

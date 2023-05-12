@@ -19,8 +19,8 @@ public class MeetingConverter {
 
     public static BaseMeetingDTO toDto(MeetingDO meetingDO) {
         BaseMeetingDTO dto = new BaseMeetingDTO();
-        BeanUtils.copyProperties(meetingDO, dto);
         dto.setMeetingId(meetingDO.getId());
+        BeanUtils.copyProperties(meetingDO, dto);
         return dto;
     }
 
@@ -31,7 +31,7 @@ public class MeetingConverter {
     public static MeetingDO toDO(MeetingSaveReq meeting) {
         MeetingDO meetingDO = new MeetingDO();
         BeanUtils.copyProperties(meeting, meetingDO);
-        meetingDO.setBeginTime(meeting.getBeginTime());
+        meetingDO.setPublisher(2L);  // fixme
         return meetingDO;
     }
 }

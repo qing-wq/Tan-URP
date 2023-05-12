@@ -40,7 +40,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         if (CollectionUtils.isEmpty(list)) {
             return PageListVo.emptyVo();
         }
-        return PageListVo.newVo(buildMeetingDto(list), pageParam.getPageSize());
+        return PageListVo.newVo(MeetingConverter.toDtoList(list), pageParam.getPageSize());
     }
 
     private List<BaseMeetingDTO> buildMeetingDto(List<MeetingDO> list) {
@@ -78,7 +78,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
      */
     public Long saveMeeting(MeetingSaveReq meeting) {
         MeetingDO meetingDO = MeetingConverter.toDO(meeting);
-        if (meetingDO.getId() == null) {
+        if (meeting.getMeetingId() == null) {
             save(meetingDO);
         } else {
             updateById(meetingDO);

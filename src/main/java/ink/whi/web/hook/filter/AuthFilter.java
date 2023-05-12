@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +26,7 @@ import java.net.URLDecoder;
 public class AuthFilter implements Filter {
     private static final Logger REQ_LOG = LoggerFactory.getLogger("req");
 
-//    @Autowired
-//    private StatisticsSettingService statisticSettingService;
-
-    @Autowired
+    @Resource
     private GlobalInitHelper globalInitService;
 
     @Override
@@ -62,7 +59,7 @@ public class AuthFilter implements Filter {
             globalInitService.initUserInfo(reqInfo);
             ReqInfoContext.addReqInfo(reqInfo);
         } catch (Exception e) {
-            log.info("init reqInfo error: " + e.getMessage());
+            log.error("init reqInfo error: " + e.getMessage());
         }
         return request;
     }
@@ -106,7 +103,6 @@ public class AuthFilter implements Filter {
         REQ_LOG.info("{}", msg);
 
         // todo: 保存请求计数
-//        statisticSettingService.saveRequestCount(req.getClientIp());
     }
 
     private boolean staticURI(HttpServletRequest request) {
