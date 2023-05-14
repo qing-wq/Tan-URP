@@ -81,6 +81,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         if (meeting.getMeetingId() == null) {
             save(meetingDO);
         } else {
+            meetingDO.setId(meeting.getMeetingId());
             updateById(meetingDO);
         }
         return meetingDO.getId();

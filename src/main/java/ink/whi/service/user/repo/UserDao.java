@@ -63,13 +63,22 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
 
     @Transactional(rollbackFor = Exception.class)
     public Long saveUser(UserSaveReq req) {
-        UserDO user = new UserDO();
+        // user + user_info
         String role = RoleEnum.role(req.getUserRole());
         if (role == null || Objects.equals(role, RoleEnum.TAN.name())) {
             throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + req.getUserRole());
         }
+
+        UserDO user = new UserDO();
+        // 默认账号密码
         user.setUserName(req.getUserName() == null ? req.getStudentId() : req.getUserName());
         user.setPassWord(req.getPassword() == null ? SpringUtil.getConfig("password.default." + role.toLowerCase()) : req.getPassword());
+
+        // 校验用户是否存在
+        UserDO record = getByUserName(user.getUserName());
+        if (record != null) {
+            throw BusinessException.newInstance(StatusEnum.USER_ALREADY_EXISTS);
+        }
         userMapper.insert(user);
 
         UserInfoDO userInfo = UserConverter.toDo(req);
