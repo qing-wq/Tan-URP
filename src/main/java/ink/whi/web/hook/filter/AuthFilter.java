@@ -86,7 +86,7 @@ public class AuthFilter implements Filter {
         if (StringUtils.isNotBlank(req.getReferer())) {
             msg.append("referer=").append(URLDecoder.decode(req.getReferer())).append("; ");
         }
-        msg.append("; agent=").append(req.getUserAgent());
+        msg.append(req.getUserAgent());
 
         if (req.getUserId() != null) {
             // 打印用户信息
@@ -100,7 +100,7 @@ public class AuthFilter implements Filter {
 
         msg.append("; payload=").append(req.getPayload());
         msg.append("; cost=").append(costTime);
-        REQ_LOG.info("{}", msg);
+        log.info("{}", msg);
 
         // todo: 保存请求计数
     }

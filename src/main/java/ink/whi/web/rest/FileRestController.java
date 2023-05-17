@@ -38,7 +38,7 @@ public class FileRestController {
     private FileDao fileDao;
 
     /**
-     * 文件上传
+     * 会议文件上传
      *
      * @param file
      * @param meetingId
