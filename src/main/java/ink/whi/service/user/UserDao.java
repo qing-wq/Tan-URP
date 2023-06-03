@@ -1,4 +1,4 @@
-package ink.whi.service.user.repo;
+package ink.whi.service.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -8,11 +8,11 @@ import ink.whi.api.model.enums.RoleEnum;
 import ink.whi.api.model.enums.YesOrNoEnum;
 import ink.whi.api.model.exception.BusinessException;
 import ink.whi.api.model.exception.StatusEnum;
-import ink.whi.api.util.SpringUtil;
-import ink.whi.api.util.UserPwdEncoder;
+import ink.whi.core.util.SpringUtil;
+import ink.whi.core.util.UserPwdEncoder;
 import ink.whi.service.converter.UserConverter;
-import ink.whi.service.user.repo.entity.UserDO;
-import ink.whi.service.user.repo.entity.UserInfoDO;
+import ink.whi.service.user.entity.UserDO;
+import ink.whi.service.user.entity.UserInfoDO;
 import ink.whi.web.vo.UserSaveReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

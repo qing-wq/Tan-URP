@@ -1,4 +1,4 @@
-package ink.whi.service.user.repo.entity;
+package ink.whi.service.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import ink.whi.api.model.dto.base.BaseDO;

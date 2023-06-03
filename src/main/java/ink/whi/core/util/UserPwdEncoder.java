@@ -1,4 +1,4 @@
-package ink.whi.api.util;
+package ink.whi.core.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

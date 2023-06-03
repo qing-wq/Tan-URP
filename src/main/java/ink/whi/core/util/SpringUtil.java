@@ -1,4 +1,4 @@
-package ink.whi.api.util;
+package ink.whi.core.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;

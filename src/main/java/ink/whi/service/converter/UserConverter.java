@@ -2,7 +2,7 @@ package ink.whi.service.converter;
 
 import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.enums.RoleEnum;
-import ink.whi.service.user.repo.entity.UserInfoDO;
+import ink.whi.service.user.entity.UserInfoDO;
 import ink.whi.web.vo.UserSaveReq;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
