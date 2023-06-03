@@ -1,0 +1,16 @@
+image:
+  abs-tmp-path: D:\tmp\tan-urp
+  web-img-path: \image\
+  tmp-upload-path: D:\tmp\tan-urp\
+  cdn-host:
+  oss:
+    type: local
+    prefix:
+
+
+spring:
+  web:
+    resources:
+      static-locations:
+        - classpath:/static/
+        - file:${image.abs-tmp-path}
