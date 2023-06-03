@@ -5,9 +5,11 @@ import ink.whi.api.model.dto.FileDTO;
 import ink.whi.api.model.exception.BusinessException;
 import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.ResVo;
+import ink.whi.service.converter.FileConverter;
+import ink.whi.service.file.FileDO;
 import ink.whi.service.file.FileDao;
-import ink.whi.service.meeting.repo.MeetingDO;
-import ink.whi.service.meeting.repo.MeetingDao;
+import ink.whi.service.meeting.MeetingDO;
+import ink.whi.service.meeting.MeetingDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * 文件上传下载接口
+ *
  * @author: qing
  * @Date: 2023/5/8
  */
@@ -29,7 +32,7 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping(path = "file")
 public class FileRestController {
 
-    @Value("${file.upload}")
+    @Value("${file.upload.meeting}")
     private String uploadPath;
 
     @Autowired
@@ -56,13 +59,34 @@ public class FileRestController {
     }
 
     /**
+     * 根据ID获取文件
+     * @param fileId
+     * @return
+     */
+    @GetMapping(path = "/{fileId}")
+    public ResVo<FileDTO> get(@PathVariable(name = "fileId") Long fileId) {
+        FileDO file = fileDao.getById(fileId);
+        if (file == null) {
+            return ResVo.fail(StatusEnum.RECORDS_NOT_EXISTS, fileId);
+        }
+        FileDTO dto = FileConverter.toDto(file);
+        return ResVo.ok(dto);
+    }
+
+    /**
      * 文件下载
-     * @param path
+     *
+     * @param fileId
      * @param response
      */
     @GetMapping("/download")
-    public void download(@RequestParam(name = "path") String path, HttpServletResponse response) {
+    public ResVo<String> download(@RequestParam(name = "fileId") Long fileId, HttpServletResponse response) {
+        FileDO record = fileDao.getById(fileId);
+        if (record == null) {
+            return ResVo.fail(StatusEnum.RECORDS_NOT_EXISTS, fileId);
+        }
         // keypoint: 文件以流的形式一次性读取到内存，通过响应输出流输出到前端
+        String path = record.getFilePath();
         try {
             File file = new File(path);
             String filename = file.getName();
@@ -89,6 +113,7 @@ public class FileRestController {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        return ResVo.ok("ok");
     }
 
     private FileDTO saveFileToLocal(MultipartFile file, Long meetingId) {
