@@ -13,4 +13,4 @@ spring:
     resources:
       static-locations:
         - classpath:/static/
-        - file:${image.abs-tmp-path}
+        - file:D:\tmp\tan-urp\image\
