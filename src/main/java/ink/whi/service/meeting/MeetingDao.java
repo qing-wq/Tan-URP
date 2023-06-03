@@ -1,4 +1,4 @@
-package ink.whi.service.meeting.repo;
+package ink.whi.service.meeting;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,7 +12,7 @@ import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
 import ink.whi.service.converter.MeetingConverter;
-import ink.whi.service.user.repo.UserDao;
+import ink.whi.service.user.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

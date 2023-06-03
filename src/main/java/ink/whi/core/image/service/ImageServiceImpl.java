@@ -12,6 +12,7 @@ import ink.whi.core.util.MdImgLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @Date: 2023/5/1
  */
 @Slf4j
-@Service
+@Component
 public class ImageServiceImpl implements ImageService {
 
     @Autowired

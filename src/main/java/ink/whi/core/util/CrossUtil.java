@@ -1,4 +1,4 @@
-package ink.whi.api.util;
+package ink.whi.core.util;
 
 
 import org.apache.commons.lang3.StringUtils;

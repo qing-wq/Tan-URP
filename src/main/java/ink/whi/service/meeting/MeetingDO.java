@@ -1,4 +1,4 @@
-package ink.whi.service.meeting.repo;
+package ink.whi.service.meeting;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;

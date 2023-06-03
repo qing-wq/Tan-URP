@@ -3,24 +3,15 @@ package ink.whi.web.rest;
 import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
-import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
 import ink.whi.api.model.vo.ResVo;
-import ink.whi.api.util.JwtUtil;
-import ink.whi.service.meeting.repo.MeetingDao;
-import ink.whi.service.user.repo.UserDao;
+import ink.whi.service.meeting.MeetingDao;
+import ink.whi.service.user.UserDao;
 import ink.whi.web.vo.IndexVo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ink.whi.web.global.GlobalInitHelper;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 首页接口

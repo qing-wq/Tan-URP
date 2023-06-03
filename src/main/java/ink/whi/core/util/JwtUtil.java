@@ -1,4 +1,4 @@
-package ink.whi.api.util;
+package ink.whi.core.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
