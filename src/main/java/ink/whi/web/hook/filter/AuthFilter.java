@@ -1,7 +1,7 @@
 package ink.whi.web.hook.filter;
 
 import ink.whi.api.model.context.ReqInfoContext;
-import ink.whi.api.util.CrossUtil;
+import ink.whi.core.util.CrossUtil;
 import ink.whi.web.global.GlobalInitHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
