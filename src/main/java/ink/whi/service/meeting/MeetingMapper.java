@@ -1,7 +1,6 @@
-package ink.whi.service.meeting.repo;
+package ink.whi.service.meeting;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author: qing

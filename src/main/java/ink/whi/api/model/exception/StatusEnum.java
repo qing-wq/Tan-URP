@@ -20,6 +20,7 @@ public enum StatusEnum {
     // 全局传参异常
     ILLEGAL_ARGUMENTS(100_400_001, "参数异常"),
     ILLEGAL_ARGUMENTS_MIXED(100_400_002, "参数异常:%s"),
+    BAD_REQUEST(100_400_003, "你这个请求错了吧，要不要换个姿势！！！"),
 
     // 全局权限相关
     FORBID_ERROR(100_403_001, "无权限"),
@@ -27,7 +28,7 @@ public enum StatusEnum {
     FORBID_ERROR_MIXED(100_403_002, "无权限:%s"),
 
     // 全局，数据不存在
-    RECORDS_NOT_EXISTS(100_404_001, "记录不存在:%s"),
+    RECORDS_NOT_EXISTS(100_400_001, "记录不存在:%s"),
 
     // 系统异常
     UNEXPECT_ERROR(100_500_001, "非预期异常:%s"),
