@@ -1,20 +1,18 @@
 package ink.whi.web.hook.interceptor;
 
-import com.google.common.collect.Maps;
 import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.enums.RoleEnum;
 import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.ResVo;
 import ink.whi.api.permission.Permission;
 import ink.whi.api.permission.UserRole;
-import ink.whi.api.util.JsonUtil;
+import ink.whi.core.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +27,10 @@ import java.util.Objects;
 public class GlobalInterceptor implements AsyncHandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 放行静态资源
+        if (staticURI(request)) {
+            return true;
+        }
         if (handler instanceof HandlerMethod handlerMethod) {
             Permission permission = handlerMethod.getMethod().getAnnotation(Permission.class);
             if (permission == null) {
@@ -68,5 +70,14 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
         }
         return true;
+    }
+
+    private boolean staticURI(HttpServletRequest request) {
+        return request == null
+                || request.getRequestURI().endsWith("css")
+                || request.getRequestURI().endsWith("js")
+                || request.getRequestURI().endsWith("png")
+                || request.getRequestURI().endsWith("ico")
+                || request.getRequestURI().endsWith("svg");
     }
 }

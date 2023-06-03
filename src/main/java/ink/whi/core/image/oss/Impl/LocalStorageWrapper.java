@@ -28,6 +28,7 @@ import java.util.Random;
 @Component
 @ConditionalOnExpression(value = "#{'local'.equals(environment.getProperty('image.oss.type'))}")
 public class LocalStorageWrapper implements ImageUploader {
+    private static final String PREFIX = "/images/";
 
     @Autowired
     private ImageProperties imageProperties;
@@ -75,7 +76,7 @@ public class LocalStorageWrapper implements ImageUploader {
             String fileName = genTmpFileName();
 
             FileWriteUtil.FileInfo file = FileWriteUtil.saveFileByStream(input, path, fileName, fileType);
-            return imageProperties.buildImgUrl(imageProperties.getWebImgPath() + file.getFilename() + "." + file.getFileType());
+            return imageProperties.buildImgUrl(PREFIX + file.getFilename() + "." + file.getFileType());
         } catch (Exception e) {
             log.error("Parse img from httpRequest to BufferedImage error! e:", e);
             throw BusinessException.newInstance(StatusEnum.UPLOAD_PIC_FAILED);

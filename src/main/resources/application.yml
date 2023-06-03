@@ -1,5 +1,6 @@
 server:
   port: 8080
+  address: 0.0.0.0
   servlet:
     session:
       timeout: 5m # 设置session的有效期为五分钟
@@ -8,16 +9,14 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/urp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/${database.name}?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: root
-#  redis:
-#    host: localhost
-#    port: 6379
-#  data:
-#    mongodb:
-#      uri: mongodb://root:root@localhost:27017/urp?authSource=admin&authMechanism=SCRAM-SHA-1
-#      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
+  main:
+    allow-circular-references: true
+  config:
+    import: application-image-win.yml
+
 
 database:
   name: urp
@@ -29,9 +28,11 @@ jwt:
   key: Tan-SAI
 
 file:
-  upload: /tmp/tan-urp/
+  upload:
+#    meeting: /tmp/tan-urp/meeting/
+    meeting: D:\tmp\tan-urp\meeting\
 
 password:
   default:
-    normal: root
-    leader: root
+    normal: 123456
+    leader: tan2021
