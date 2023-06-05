@@ -16,6 +16,10 @@ spring:
     allow-circular-references: true
   config:
     import: application-image-win.yml
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 500MB
 
 
 database:
