@@ -7,6 +7,7 @@ import ink.whi.api.model.vo.ResVo;
 import ink.whi.api.permission.Permission;
 import ink.whi.api.permission.UserRole;
 import ink.whi.core.util.JwtUtil;
+import ink.whi.core.util.SessionUtil;
 import ink.whi.service.file.FileDao;
 import ink.whi.service.user.UserDao;
 import ink.whi.web.global.GlobalInitHelper;
@@ -55,13 +56,23 @@ public class UserRestController {
         // 签发token
         String token = JwtUtil.createToken(info.getUserId());
         if (StringUtils.isNotBlank(token)) {
-            Cookie cookie = new Cookie(GlobalInitHelper.SESSION_KEY, token);
-            cookie.setPath("/");
+            Cookie cookie = SessionUtil.newCookie(GlobalInitHelper.SESSION_KEY, token);
             response.addCookie(cookie);
             return ResVo.ok(info);
         } else {
             return ResVo.fail(StatusEnum.LOGIN_FAILED_MIXED, "登录失败，请重试");
         }
+    }
+
+    /**
+     * 登出接口
+     * @param response
+     * @return
+     */
+    @GetMapping(path = "logout")
+    public ResVo<String> logout(HttpServletResponse response) {
+        response.addCookie(SessionUtil.delCookie(GlobalInitHelper.SESSION_KEY));
+        return ResVo.ok("ok");
     }
 
     /**
