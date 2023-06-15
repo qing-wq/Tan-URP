@@ -22,7 +22,7 @@ public class CustomizeErrorController implements ErrorController {
     @RequestMapping(path = "")
     public ResVo<String> error(HttpServletRequest request) {
         HttpStatus status = getStatus(request);
-        log.error("[Error] capture an Error");
+        log.error("[Error] capture an Error " + status.name());
 
         if (status.is4xxClientError()) {
             ResVo.fail(StatusEnum.BAD_REQUEST);

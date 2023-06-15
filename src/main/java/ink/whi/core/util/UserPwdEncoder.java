@@ -24,4 +24,8 @@ public class UserPwdEncoder {
         return Objects.equals(DigestUtils.md5DigestAsHex(plainPwd.getBytes(StandardCharsets.UTF_8)), encPwd);
     }
 
+    public String encode(String password) {
+        return DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
+    }
+
 }

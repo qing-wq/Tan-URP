@@ -1,5 +1,6 @@
 package ink.whi.web.rest;
 
+import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.dto.FileDTO;
 import ink.whi.api.model.exception.StatusEnum;
@@ -102,5 +103,16 @@ public class UserRestController {
     public ResVo<String> saveUser(@RequestBody UserSaveReq req) {
         userDao.saveUser(req);
         return ResVo.ok("ok");
+    }
+
+    /**
+     * 根据token获取当前用户信息
+     * @return
+     */
+    @GetMapping(path = "info")
+    public ResVo<BaseUserInfoDTO> getUserInfo() {
+        Long userId = ReqInfoContext.getReqInfo().getUserId();
+        BaseUserInfoDTO dto = userDao.queryBasicUserInfo(userId);
+        return ResVo.ok(dto);
     }
 }

@@ -72,7 +72,8 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         UserDO user = new UserDO();
         // 默认账号密码
         user.setUserName(req.getUserName() == null ? req.getStudentId() : req.getUserName());
-        user.setPassWord(req.getPassword() == null ? SpringUtil.getConfig("password.default." + role.toLowerCase()) : req.getPassword());
+        String pwd = req.getPassword() == null ? SpringUtil.getConfig("password.default." + role.toLowerCase()) : req.getPassword();
+        user.setPassWord(userPwdEncoder.encode(pwd));
 
         // 校验用户是否存在
         UserDO record = getByUserName(user.getUserName());
