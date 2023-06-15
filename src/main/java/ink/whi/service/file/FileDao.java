@@ -2,18 +2,21 @@ package ink.whi.service.file;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.dto.FileDTO;
 import ink.whi.api.model.dto.base.BaseDO;
 import ink.whi.api.model.enums.YesOrNoEnum;
+import ink.whi.api.model.exception.BusinessException;
+import ink.whi.api.model.exception.StatusEnum;
+import ink.whi.api.model.vo.ResVo;
 import ink.whi.service.converter.FileConverter;
 import ink.whi.service.user.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.File;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: qing
@@ -42,7 +45,7 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
         file.setFilePath(filePath);
         file.setDownload(0);
         file.setCreateTime(new Date());
-        FileDO record = getFileByFileName(fileName);
+        FileDO record = getFileByFileNameAndMeetingID(fileName, meetingId);  // 上传文件冲突
         if (record != null) {
             file.setId(record.getId());
             updateById(record);
@@ -52,8 +55,9 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
         return fillFileInfo(file);
     }
 
-    private FileDO getFileByFileName(String fileName) {
+    private FileDO getFileByFileNameAndMeetingID(String fileName, Long MeetingId) {
         List<FileDO> list = lambdaQuery().eq(FileDO::getFileName, fileName)
+                .eq(FileDO::getMeetId, MeetingId)
                 .eq(FileDO::getDeleted, YesOrNoEnum.NO.getCode())
                 .list();
         return CollectionUtils.isEmpty(list) ? null : list.get(0);
@@ -102,5 +106,22 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
         FileDTO dto = FileConverter.toDto(file);
         dto.setUserInfo(userDao.queryBasicUserInfo(file.getUserId()));
         return dto;
+    }
+
+    /**
+     * 删除文件
+     * @param fileId
+     */
+    public void deleteFile(Long fileId) {
+        FileDO record = getById(fileId);
+        if (record == null) {
+            throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, fileId);
+        }
+        Long userId = ReqInfoContext.getReqInfo().getUserId();
+        if (!Objects.equals(userId, record.getUserId())) {
+            throw BusinessException.newInstance(StatusEnum.FORBID_ERROR_MIXED, "您无法操作其他人的文件");
+        }
+        record.setDeleted(YesOrNoEnum.YES.getCode());
+        updateById(record);
     }
 }

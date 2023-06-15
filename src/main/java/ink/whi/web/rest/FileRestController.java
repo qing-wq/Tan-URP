@@ -5,11 +5,13 @@ import ink.whi.api.model.dto.FileDTO;
 import ink.whi.api.model.exception.BusinessException;
 import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.ResVo;
+import ink.whi.core.util.FileUtil;
 import ink.whi.service.converter.FileConverter;
 import ink.whi.service.file.FileDO;
 import ink.whi.service.file.FileDao;
 import ink.whi.service.meeting.MeetingDO;
 import ink.whi.service.meeting.MeetingDao;
+import ink.whi.service.user.UserDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * 文件上传下载接口
@@ -39,6 +42,8 @@ public class FileRestController {
     private MeetingDao meetingDao;
     @Autowired
     private FileDao fileDao;
+    @Autowired
+    private UserDao userDao;
 
     /**
      * 会议文件上传
@@ -70,6 +75,8 @@ public class FileRestController {
             return ResVo.fail(StatusEnum.RECORDS_NOT_EXISTS, fileId);
         }
         FileDTO dto = FileConverter.toDto(file);
+        dto.setUserInfo(userDao.queryBasicUserInfo(file.getUserId()));
+        dto.setFileSize(FileUtil.getFileSize(file.getFilePath()));
         return ResVo.ok(dto);
     }
 
@@ -131,5 +138,16 @@ public class FileRestController {
             e.printStackTrace();
             throw BusinessException.newInstance(StatusEnum.UNEXPECT_ERROR, e.getMessage());
         }
+    }
+
+    /**
+     * 文件删除接口
+     * @param fileId
+     * @return
+     */
+    @GetMapping(path = "del/{fileId}")
+    public ResVo<String> delete(@PathVariable(name = "fileId") Long fileId) {
+        fileDao.deleteFile(fileId);
+        return ResVo.ok("ok");
     }
 }

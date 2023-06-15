@@ -40,6 +40,10 @@ public class FileDTO implements Serializable {
      */
     private Integer download;
     /**
+     * 文件大小(Byte)
+     */
+    private Long fileSize;
+    /**
      * 用户信息
      */
     private BaseUserInfoDTO userInfo;

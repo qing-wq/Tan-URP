@@ -2,7 +2,9 @@ package ink.whi.service.converter;
 
 import ink.whi.api.model.dto.FileDTO;
 import ink.whi.service.file.FileDO;
+import ink.whi.service.user.UserDao;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
