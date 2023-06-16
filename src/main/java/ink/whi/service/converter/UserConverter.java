@@ -7,6 +7,8 @@ import ink.whi.web.vo.UserSaveReq;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.util.List;
+
 /**
  * 用户实体转换器
  * @author: qing
@@ -28,5 +30,9 @@ public class UserConverter {
         UserInfoDO userInfoDO = new UserInfoDO();
         BeanUtils.copyProperties(req, userInfoDO);
         return userInfoDO;
+    }
+
+    public static List<BaseUserInfoDTO> toDtoList(List<UserInfoDO> list) {
+        return list.stream().map(UserConverter::toDto).toList();
     }
 }

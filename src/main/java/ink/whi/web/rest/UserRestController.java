@@ -94,7 +94,7 @@ public class UserRestController {
     }
 
     /**
-     * 创建用户
+     * 创建用户(管理员用)
      *
      * @return
      */
@@ -102,6 +102,17 @@ public class UserRestController {
     @PostMapping(path = "save")
     public ResVo<String> saveUser(@RequestBody UserSaveReq req) {
         userDao.saveUser(req);
+        return ResVo.ok("ok");
+    }
+
+    /**
+     * 用户修改(普通用户使用)
+     * @param req
+     * @return
+     */
+    @PostMapping(path = "update")
+    public ResVo<String> updateUser(@RequestBody UserSaveReq req) {
+        userDao.updateUser(req);
         return ResVo.ok("ok");
     }
 
@@ -114,5 +125,26 @@ public class UserRestController {
         Long userId = ReqInfoContext.getReqInfo().getUserId();
         BaseUserInfoDTO dto = userDao.queryBasicUserInfo(userId);
         return ResVo.ok(dto);
+    }
+
+    /**
+     * 用户列表接口
+     * @return
+     */
+    @GetMapping(path = "list")
+    public ResVo<List<BaseUserInfoDTO>> list() {
+        List<BaseUserInfoDTO> userList = userDao.getUserList();
+        return ResVo.ok(userList);
+    }
+
+    /**
+     * 用户查询接口
+     * @param key
+     * @return
+     */
+    @GetMapping(path = "seek")
+    public ResVo<List<BaseUserInfoDTO>> search(@RequestParam(name = "key") String key) {
+        List<BaseUserInfoDTO> list = userDao.queryUserBySearchKey(key);
+        return ResVo.ok(list);
     }
 }
