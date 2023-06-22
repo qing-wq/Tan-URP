@@ -31,8 +31,6 @@ public class MeetingConverter {
     public static MeetingDO toDO(MeetingSaveReq meeting) {
         MeetingDO meetingDO = new MeetingDO();
         BeanUtils.copyProperties(meeting, meetingDO);
-
-        meetingDO.setPublisher(2L);  // fixme
         return meetingDO;
     }
 }

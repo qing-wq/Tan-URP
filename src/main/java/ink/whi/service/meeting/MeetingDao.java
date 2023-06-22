@@ -30,6 +30,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
 
     /**
      * 查询全部meeting
+     *
      * @param pageParam
      * @return
      */
@@ -41,7 +42,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         if (CollectionUtils.isEmpty(list)) {
             return PageListVo.emptyVo();
         }
-        return PageListVo.newVo(MeetingConverter.toDtoList(list), pageParam.getPageSize());
+        return PageListVo.newVo(buildMeetingDto(list), pageParam.getPageSize());
     }
 
     private List<BaseMeetingDTO> buildMeetingDto(List<MeetingDO> list) {
@@ -51,12 +52,13 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
     private BaseMeetingDTO fillMeetingDto(MeetingDO meetingDO) {
         BaseMeetingDTO dto = MeetingConverter.toDto(meetingDO);
         BaseUserInfoDTO user = userDao.queryBasicUserInfo(meetingDO.getPublisher());
-        dto.setPublisher(user.getUserInfoName());
+        dto.setPublisher(user);
         return dto;
     }
 
     /**
      * 通过Tag获取Meeting
+     *
      * @param tag
      * @param pageParam
      * @return
@@ -75,14 +77,15 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
 
     /**
      * 保存或更新会议
+     *
      * @param meeting
      */
     public Long saveMeeting(MeetingSaveReq meeting) {
         MeetingDO meetingDO = MeetingConverter.toDO(meeting);
         if (meeting.getMeetingId() == null) {
-            // 保存会议记录
             if (meeting.getContent() == null) {
-                throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "内容不能为空");
+                // 设置会议内容默认值
+                meetingDO.setContent("");
             }
             save(meetingDO);
         } else {
@@ -92,7 +95,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
             }
             meetingDO.setId(meeting.getMeetingId());
             if (meetingDO.getContent() == null) {
-                // 如果修改后的内容为空，则不设置修改
+                // 如果修改后的内容为空，则不修改内容
                 meetingDO.setContent(record.getContent());
             }
             updateById(meetingDO);
@@ -102,6 +105,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
 
     /**
      * 删除会议
+     *
      * @param meetingId
      */
     public void deleteMeeting(Long meetingId) {
@@ -111,5 +115,13 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         }
         record.setDeleted(YesOrNoEnum.YES.getCode());
         updateById(record);
+    }
+
+    public BaseMeetingDTO queryByMeetingId(Long meetingId) {
+        MeetingDO meeting = getById(meetingId);
+        if (meeting == null) {
+            throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, meetingId);
+        }
+        return fillMeetingDto(meeting);
     }
 }

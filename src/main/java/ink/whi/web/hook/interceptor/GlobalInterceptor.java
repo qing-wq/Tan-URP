@@ -61,7 +61,7 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
 
             // Admin
-            if (permission.role() == UserRole.ADMIN && !Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole(), RoleEnum.TAN.name())) {
+            if (permission.role() == UserRole.ADMIN && !Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole(), RoleEnum.ADMIN.name())) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR)));

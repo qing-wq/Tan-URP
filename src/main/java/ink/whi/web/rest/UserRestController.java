@@ -112,6 +112,9 @@ public class UserRestController {
      */
     @PostMapping(path = "update")
     public ResVo<String> updateUser(@RequestBody UserSaveReq req) {
+        if (req.getPassword().length() < 6) {
+            return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "密码不能少于6位");
+        }
         userDao.updateUser(req);
         return ResVo.ok("ok");
     }

@@ -3,6 +3,7 @@ package ink.whi.service.file;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ink.whi.api.model.context.ReqInfoContext;
+import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.dto.FileDTO;
 import ink.whi.api.model.dto.base.BaseDO;
 import ink.whi.api.model.enums.YesOrNoEnum;
@@ -14,9 +15,13 @@ import ink.whi.service.user.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static org.apache.logging.log4j.ThreadContext.peek;
 
 /**
  * @author: qing
@@ -69,7 +74,7 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
      * @param meetingId
      * @return
      */
-    public List<FileDTO> listFileByMeetingId(String meetingId) {
+    public List<FileDTO> listFileByMeetingId(Long meetingId) {
         List<FileDO> list = lambdaQuery().eq(FileDO::getMeetId, meetingId)
                 .eq(FileDO::getDeleted, YesOrNoEnum.NO.getCode())
                 .orderByDesc(BaseDO::getCreateTime)
@@ -88,6 +93,7 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
                 .eq(FileDO::getDeleted, YesOrNoEnum.NO.getCode())
                 .orderByDesc(BaseDO::getCreateTime)
                 .list();
+        BaseUserInfoDTO info = userDao.queryBasicUserInfo(userId);
         return buildListFileDTO(list);
     }
 
@@ -105,6 +111,9 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
     public FileDTO fillFileInfo(FileDO file) {
         FileDTO dto = FileConverter.toDto(file);
         dto.setUserInfo(userDao.queryBasicUserInfo(file.getUserId()));
+        String filePath = file.getFilePath();
+        long fileSize = new File(filePath).length();
+        dto.setFileSize(fileSize);
         return dto;
     }
 

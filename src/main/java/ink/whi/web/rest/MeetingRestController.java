@@ -16,6 +16,7 @@ import ink.whi.service.file.FileDao;
 import ink.whi.service.meeting.MeetingDO;
 import ink.whi.service.meeting.MeetingDao;
 import ink.whi.api.model.vo.ResVo;
+import ink.whi.service.user.UserDao;
 import ink.whi.web.vo.MeetingDetailVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "meeting")
 public class MeetingRestController extends PageHelper {
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private MeetingDao meetingDao;
@@ -77,6 +81,7 @@ public class MeetingRestController extends PageHelper {
     @Permission(role = UserRole.LEADER)
     @PostMapping(path = "save")
     public ResVo<Long> saveMeeting(@RequestBody MeetingSaveReq meeting) {
+        userDao.queryByUserId(meeting.getPublisher());
         Long meetingId = meetingDao.saveMeeting(meeting);
         return ResVo.ok(meetingId);
     }
@@ -100,13 +105,9 @@ public class MeetingRestController extends PageHelper {
      * @return
      */
     @GetMapping(path = "detail/{meetingId}")
-    public ResVo<MeetingDetailVo> detail(@PathVariable(name = "meetingId") String meetingId) {
+    public ResVo<MeetingDetailVo> detail(@PathVariable(name = "meetingId") Long meetingId) {
         MeetingDetailVo vo = new MeetingDetailVo();
-        MeetingDO meeting = meetingDao.getById(meetingId);
-        if (meeting == null) {
-            throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, "会议不存在");
-        }
-        BaseMeetingDTO dto = MeetingConverter.toDto(meeting);
+        BaseMeetingDTO dto = meetingDao.queryByMeetingId(meetingId);
         vo.setMeetingDTO(dto);
 
         List<FileDTO> fileList = fileDao.listFileByMeetingId(meetingId);

@@ -1,6 +1,5 @@
 package ink.whi.api.model.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -13,7 +12,7 @@ import java.util.Objects;
 public enum RoleEnum {
     NORMAL(0, "普通用户"),
     LEADER(1, "组长"),
-    TAN(2, "谭sir")
+    ADMIN(2, "超级管理员")
     ;
 
     private int role;

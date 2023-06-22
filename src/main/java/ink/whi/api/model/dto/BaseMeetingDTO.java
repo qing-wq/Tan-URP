@@ -50,7 +50,7 @@ public class BaseMeetingDTO implements Serializable {
      */
     private Integer tag;
     /**
-     * 发表人姓名
+     * 发表人信息
      */
-    private String publisher;
+    private BaseUserInfoDTO publisher;
 }

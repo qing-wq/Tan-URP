@@ -63,11 +63,16 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         return userMapper.selectOne(wrapper);
     }
 
+    /**
+     * 保存或更新用户（管理员）
+     * @param req
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     public Long saveUser(UserSaveReq req) {
         // user + user_info
         String role = RoleEnum.role(req.getUserRole()).name();
-        if (Objects.equals(role, RoleEnum.TAN.name())) {
+        if (Objects.equals(role, RoleEnum.ADMIN.name())) {
             throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + req.getUserRole());
         }
 
@@ -124,18 +129,25 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         return UserConverter.toDtoList(list);
     }
 
+    /**
+     * 更新用户（普通用户）
+     * @param req
+     */
     public void updateUser(UserSaveReq req) {
-        String username = req.getUserName() == null ? req.getStudentId() : req.getUserName();
-        UserDO record = queryByUserName(username);
+        Long userId = ReqInfoContext.getReqInfo().getUserId();
+        UserDO record = queryByUserId(userId);
         if (record == null) {
             throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, "账号不存在，请联系管理员");
         }
-        // 只有本人能修改自己的密码
-        if (Objects.equals(ReqInfoContext.getReqInfo().getUserId(), record.getId())) {
-            throw BusinessException.newInstance(StatusEnum.FORBID_ERROR_MIXED, "您没有权限");
-        }
-        String pwd = req.getPassword() == null ? req.getStudentId() : req.getPassword();
-        record.setPassWord(userPwdEncoder.encode(pwd));
+        record.setPassWord(userPwdEncoder.encode(req.getPassword()));
         userMapper.updateById(record);
+    }
+
+    public UserDO queryByUserId(Long userId) {
+        UserDO record = userMapper.selectById(userId);
+        if (record == null) {
+            throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, userId);
+        }
+        return record;
     }
 }
