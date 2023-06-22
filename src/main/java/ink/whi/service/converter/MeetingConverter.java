@@ -1,8 +1,11 @@
 package ink.whi.service.converter;
 
 import ink.whi.api.model.dto.BaseMeetingDTO;
+import ink.whi.api.model.exception.BusinessException;
+import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.MeetingSaveReq;
 import ink.whi.service.meeting.MeetingDO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
@@ -28,6 +31,7 @@ public class MeetingConverter {
     public static MeetingDO toDO(MeetingSaveReq meeting) {
         MeetingDO meetingDO = new MeetingDO();
         BeanUtils.copyProperties(meeting, meetingDO);
+
         meetingDO.setPublisher(2L);  // fixme
         return meetingDO;
     }

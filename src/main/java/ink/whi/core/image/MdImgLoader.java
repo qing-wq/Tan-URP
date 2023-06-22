@@ -1,4 +1,4 @@
-package ink.whi.core.util;
+package ink.whi.core.image;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

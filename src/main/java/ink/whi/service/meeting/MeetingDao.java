@@ -1,6 +1,7 @@
 package ink.whi.service.meeting;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.dto.base.BaseDO;
@@ -79,9 +80,21 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
     public Long saveMeeting(MeetingSaveReq meeting) {
         MeetingDO meetingDO = MeetingConverter.toDO(meeting);
         if (meeting.getMeetingId() == null) {
+            // 保存会议记录
+            if (meeting.getContent() == null) {
+                throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "内容不能为空");
+            }
             save(meetingDO);
         } else {
+            MeetingDO record = getById(meeting.getMeetingId());
+            if (record == null) {
+                throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, meeting.getMeetingId());
+            }
             meetingDO.setId(meeting.getMeetingId());
+            if (meetingDO.getContent() == null) {
+                // 如果修改后的内容为空，则不设置修改
+                meetingDO.setContent(record.getContent());
+            }
             updateById(meetingDO);
         }
         return meetingDO.getId();

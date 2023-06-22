@@ -1,6 +1,7 @@
 package ink.whi.service.converter;
 
 import ink.whi.api.model.dto.BaseUserInfoDTO;
+import ink.whi.api.model.dto.UserRoleDTO;
 import ink.whi.api.model.enums.RoleEnum;
 import ink.whi.service.user.entity.UserInfoDO;
 import ink.whi.web.vo.UserSaveReq;
@@ -22,7 +23,8 @@ public class UserConverter {
         }
         BaseUserInfoDTO user = new BaseUserInfoDTO();
         BeanUtils.copyProperties(info, user);
-        user.setRole(RoleEnum.role(info.getUserRole()));
+        RoleEnum roleEnum = RoleEnum.role(info.getUserRole());
+        user.setRole(new UserRoleDTO(roleEnum));
         return user;
     }
 

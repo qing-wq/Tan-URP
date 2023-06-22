@@ -114,7 +114,7 @@ public class FileDao extends ServiceImpl<FileMapper, FileDO> {
      */
     public void deleteFile(Long fileId) {
         FileDO record = getById(fileId);
-        if (record == null) {
+        if (record == null || record.getDeleted() == YesOrNoEnum.YES.getCode()) {
             throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, fileId);
         }
         Long userId = ReqInfoContext.getReqInfo().getUserId();

@@ -1,5 +1,6 @@
 package ink.whi.api.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -23,12 +24,12 @@ public enum RoleEnum {
         this.desc = desc;
     }
 
-    public static String role(Integer roleId) {
+    public static RoleEnum role(Integer roleId) {
         for (RoleEnum value : RoleEnum.values()) {
             if (Objects.equals(roleId, value.getRole())) {
-                return value.name();
+                return value;
             }
         }
-        return null;
+        return RoleEnum.NORMAL;
     }
 }

@@ -66,8 +66,8 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
     @Transactional(rollbackFor = Exception.class)
     public Long saveUser(UserSaveReq req) {
         // user + user_info
-        String role = RoleEnum.role(req.getUserRole());
-        if (role == null || Objects.equals(role, RoleEnum.TAN.name())) {
+        String role = RoleEnum.role(req.getUserRole()).name();
+        if (Objects.equals(role, RoleEnum.TAN.name())) {
             throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + req.getUserRole());
         }
 

@@ -1,5 +1,6 @@
 package ink.whi.api.model.dto;
 
+import ink.whi.api.model.enums.RoleEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -32,7 +33,8 @@ public class BaseUserInfoDTO implements Serializable {
     /**
      * 用户角色
      */
-    private String role;
+    private UserRoleDTO role;
+
     /**
      * 年级
      */
