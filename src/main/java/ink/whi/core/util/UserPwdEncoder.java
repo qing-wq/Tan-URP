@@ -21,6 +21,7 @@ public class UserPwdEncoder {
     private String salt;
 
     public boolean match(String plainPwd, String encPwd) {
+        plainPwd = plainPwd + salt;
         return Objects.equals(DigestUtils.md5DigestAsHex(plainPwd.getBytes(StandardCharsets.UTF_8)), encPwd);
     }
 
