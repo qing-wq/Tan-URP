@@ -3,6 +3,7 @@ package ink.whi.web.rest;
 import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.dto.FileDTO;
+import ink.whi.api.model.enums.RoleEnum;
 import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.ResVo;
 import ink.whi.api.permission.Permission;
@@ -11,6 +12,7 @@ import ink.whi.core.util.JwtUtil;
 import ink.whi.core.util.SessionUtil;
 import ink.whi.service.file.FileDao;
 import ink.whi.service.user.UserDao;
+import ink.whi.service.user.entity.UserDO;
 import ink.whi.web.global.GlobalInitHelper;
 import ink.whi.web.vo.UserDetailVo;
 import ink.whi.web.vo.UserSaveReq;
@@ -67,6 +69,7 @@ public class UserRestController {
 
     /**
      * 登出接口
+     *
      * @param response
      * @return
      */
@@ -107,6 +110,7 @@ public class UserRestController {
 
     /**
      * 用户修改(普通用户使用)
+     *
      * @param req
      * @return
      */
@@ -121,6 +125,7 @@ public class UserRestController {
 
     /**
      * 根据token获取当前用户信息
+     *
      * @return
      */
     @GetMapping(path = "info")
@@ -133,6 +138,7 @@ public class UserRestController {
     /**
      * 用户列表接口
      * todo：添加分页
+     *
      * @return
      */
     @GetMapping(path = "list")
@@ -143,6 +149,7 @@ public class UserRestController {
 
     /**
      * 用户查询接口
+     *
      * @param key
      * @return
      */
@@ -150,5 +157,17 @@ public class UserRestController {
     public ResVo<List<BaseUserInfoDTO>> search(@RequestParam(name = "key") String key) {
         List<BaseUserInfoDTO> list = userDao.queryUserBySearchKey(key);
         return ResVo.ok(list);
+    }
+
+    /**
+     * 用户删除接口
+     * @param userId
+     * @return
+     */
+    @Permission(role = UserRole.ADMIN)
+    @GetMapping(path = "del/{userId}")
+    public ResVo<String> deleteUser(@PathVariable Long userId) {
+        userDao.deleteUser(userId);
+        return ResVo.ok("ok");
     }
 }

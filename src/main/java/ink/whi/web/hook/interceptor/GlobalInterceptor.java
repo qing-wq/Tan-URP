@@ -52,7 +52,7 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
 
             // Leader
-            if (permission.role() == UserRole.LEADER && Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole(), RoleEnum.NORMAL.name())) {
+            if (permission.role() == UserRole.LEADER && Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole().getRoleName(), RoleEnum.NORMAL.name())) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR)));
@@ -61,7 +61,7 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
 
             // Admin
-            if (permission.role() == UserRole.ADMIN && !Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole(), RoleEnum.ADMIN.name())) {
+            if (permission.role() == UserRole.ADMIN && !Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole().getRoleName(), RoleEnum.ADMIN.name())) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR)));

@@ -101,6 +101,20 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         }
     }
 
+    /**
+     * 更新用户（普通用户）
+     * @param req
+     */
+    public void updateUser(UserSaveReq req) {
+        Long userId = ReqInfoContext.getReqInfo().getUserId();
+        UserDO record = queryByUserId(userId);
+        if (record == null) {
+            throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, "账号不存在，请联系管理员");
+        }
+        record.setPassWord(userPwdEncoder.encode(req.getPassword()));
+        userMapper.updateById(record);
+    }
+
     private Long updateByUserId(UserInfoDO userInfo) {
         UserInfoDO record = lambdaQuery().eq(UserInfoDO::getUserId, userInfo.getUserId())
                 .eq(UserInfoDO::getDeleted, YesOrNoEnum.NO.getCode())
@@ -129,25 +143,25 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         return UserConverter.toDtoList(list);
     }
 
-    /**
-     * 更新用户（普通用户）
-     * @param req
-     */
-    public void updateUser(UserSaveReq req) {
-        Long userId = ReqInfoContext.getReqInfo().getUserId();
-        UserDO record = queryByUserId(userId);
-        if (record == null) {
-            throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, "账号不存在，请联系管理员");
-        }
-        record.setPassWord(userPwdEncoder.encode(req.getPassword()));
-        userMapper.updateById(record);
-    }
-
     public UserDO queryByUserId(Long userId) {
         UserDO record = userMapper.selectById(userId);
         if (record == null) {
             throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, userId);
         }
         return record;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteUser(Long userId) {
+        // user + user_info
+        UserDO userRecord = queryByUserId(userId);
+        userRecord.setDeleted(YesOrNoEnum.YES.getCode());
+        userMapper.updateById(userRecord);
+
+        UserInfoDO record = getById(userId);
+        if (record != null) {
+            record.setDeleted(YesOrNoEnum.YES.getCode());
+            updateById(record);
+        }
     }
 }
