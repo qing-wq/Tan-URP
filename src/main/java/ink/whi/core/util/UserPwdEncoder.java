@@ -26,6 +26,7 @@ public class UserPwdEncoder {
     }
 
     public String encode(String password) {
+        password = password + salt;
         return DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
     }
 
