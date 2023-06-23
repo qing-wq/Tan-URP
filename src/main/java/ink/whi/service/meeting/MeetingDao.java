@@ -1,10 +1,9 @@
 package ink.whi.service.meeting;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
-import ink.whi.api.model.dto.base.BaseDO;
 import ink.whi.api.model.dto.BaseMeetingDTO;
 import ink.whi.api.model.enums.YesOrNoEnum;
 import ink.whi.api.model.exception.BusinessException;
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: qing
@@ -25,6 +25,7 @@ import java.util.List;
  */
 @Repository
 public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
+
     @Autowired
     private UserDao userDao;
 
@@ -42,13 +43,18 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         if (CollectionUtils.isEmpty(list)) {
             return PageListVo.emptyVo();
         }
-        return PageListVo.newVo(buildMeetingDto(list), pageParam.getPageSize());
+        return PageListVo.newVo(buildMeetingDtoList(list), pageParam.getPageSize());
     }
 
-    private List<BaseMeetingDTO> buildMeetingDto(List<MeetingDO> list) {
+    private List<BaseMeetingDTO> buildMeetingDtoList(List<MeetingDO> list) {
         return list.stream().map(this::fillMeetingDto).toList();
     }
 
+    /**
+     * 补充发布者信息
+     * @param meetingDO
+     * @return
+     */
     private BaseMeetingDTO fillMeetingDto(MeetingDO meetingDO) {
         BaseMeetingDTO dto = MeetingConverter.toDto(meetingDO);
         BaseUserInfoDTO user = userDao.queryBasicUserInfo(meetingDO.getPublisher());
@@ -67,12 +73,12 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         List<MeetingDO> list = lambdaQuery().eq(MeetingDO::getTag, tag)
                 .eq(MeetingDO::getDeleted, YesOrNoEnum.NO.getCode())
                 .last(PageParam.getLimitSql(pageParam))
-                .orderByDesc(BaseDO::getCreateTime)
+                .orderByDesc(MeetingDO::getBeginTime)
                 .list();
         if (CollectionUtils.isEmpty(list)) {
             return PageListVo.emptyVo();
         }
-        return PageListVo.newVo(MeetingConverter.toDtoList(list), pageParam.getPageSize());
+        return PageListVo.newVo(buildMeetingDtoList(list), pageParam.getPageSize());
     }
 
     /**
@@ -83,15 +89,22 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
     public Long saveMeeting(MeetingSaveReq meeting) {
         MeetingDO meetingDO = MeetingConverter.toDO(meeting);
         if (meeting.getMeetingId() == null) {
+            // 保存会议
+            userDao.queryByUserId(meeting.getPublisher());  // 查询publisher是否存在
             if (meeting.getContent() == null) {
                 // 设置会议内容默认值
                 meetingDO.setContent("");
             }
             save(meetingDO);
         } else {
+            // 更新会议
             MeetingDO record = getById(meeting.getMeetingId());
             if (record == null) {
                 throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, meeting.getMeetingId());
+            }
+            if (!Objects.equals(record.getPublisher(), ReqInfoContext.getReqInfo().getUserId())) {
+                // 只有发布者能修改会议
+                throw BusinessException.newInstance(StatusEnum.FORBID_ERROR);
             }
             meetingDO.setId(meeting.getMeetingId());
             if (meetingDO.getContent() == null) {
@@ -113,13 +126,17 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         if (record == null) {
             throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, meetingId);
         }
+        if (!Objects.equals(record.getPublisher(), ReqInfoContext.getReqInfo().getUserId())) {
+            // 只有发布者能修改会议
+            throw BusinessException.newInstance(StatusEnum.FORBID_ERROR);
+        }
         record.setDeleted(YesOrNoEnum.YES.getCode());
         updateById(record);
     }
 
     public BaseMeetingDTO queryByMeetingId(Long meetingId) {
         MeetingDO meeting = getById(meetingId);
-        if (meeting == null) {
+        if (meeting == null || meeting.getDeleted() == YesOrNoEnum.YES.getCode()) {
             throw BusinessException.newInstance(StatusEnum.RECORDS_NOT_EXISTS, meetingId);
         }
         return fillMeetingDto(meeting);

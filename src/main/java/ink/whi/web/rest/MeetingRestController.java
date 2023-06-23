@@ -11,9 +11,7 @@ import ink.whi.api.model.vo.PageListVo;
 import ink.whi.api.model.vo.PageParam;
 import ink.whi.api.permission.Permission;
 import ink.whi.api.permission.UserRole;
-import ink.whi.service.converter.MeetingConverter;
 import ink.whi.service.file.FileDao;
-import ink.whi.service.meeting.MeetingDO;
 import ink.whi.service.meeting.MeetingDao;
 import ink.whi.api.model.vo.ResVo;
 import ink.whi.service.user.UserDao;
@@ -35,9 +33,6 @@ import java.util.List;
 public class MeetingRestController extends PageHelper {
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private MeetingDao meetingDao;
 
     @Autowired
@@ -49,7 +44,7 @@ public class MeetingRestController extends PageHelper {
      */
     @GetMapping(path = "list")
     public ResVo<PageListVo<BaseMeetingDTO>> list(@RequestParam(name = "page") Long pageNum,
-                                             @RequestParam(name = "pageSize") Long pageSize) {
+                                             @RequestParam(name = "pageSize", required = false) Long pageSize) {
         PageParam pageParam = buildPageParam(pageNum, pageSize);
         PageListVo<BaseMeetingDTO> list = meetingDao.listMeetings(pageParam);
         return ResVo.ok(list);
@@ -63,8 +58,9 @@ public class MeetingRestController extends PageHelper {
     @GetMapping(path = "tags/{tag}")
     public ResVo<PageListVo<BaseMeetingDTO>> getTags(@PathVariable(name = "tag") Integer tag,
                                                      @RequestParam(name = "page") Long pageNum,
-                                                     @RequestParam(name = "pageSize") Long pageSize) {
+                                                     @RequestParam(name = "pageSize", required = false) Long pageSize) {
         PageParam pageParam = buildPageParam(pageNum, pageSize);
+        System.out.println(pageParam);
         TagTypeEnum type = TagTypeEnum.formCode(tag);
         if (type == null) {
             return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法: " + tag);
@@ -81,7 +77,6 @@ public class MeetingRestController extends PageHelper {
     @Permission(role = UserRole.LEADER)
     @PostMapping(path = "save")
     public ResVo<Long> saveMeeting(@RequestBody MeetingSaveReq meeting) {
-        userDao.queryByUserId(meeting.getPublisher());
         Long meetingId = meetingDao.saveMeeting(meeting);
         return ResVo.ok(meetingId);
     }
