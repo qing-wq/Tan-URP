@@ -46,13 +46,15 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
                 return false;
             }
 
+            System.out.println(permission.role().name());
+            System.out.println(ReqInfoContext.getReqInfo().getUser().getRole());
             // ALL
             if (permission == null || permission.role() == UserRole.ALL) {
                 return true;
             }
 
             // Leader
-            if (permission.role() == UserRole.LEADER && Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole().getRoleName(), RoleEnum.NORMAL.name())) {
+            if (permission.role() == UserRole.LEADER && Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole().getRoleId(), RoleEnum.NORMAL.getRole())) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR)));
@@ -61,7 +63,7 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
             }
 
             // Admin
-            if (permission.role() == UserRole.ADMIN && !Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole().getRoleName(), RoleEnum.ADMIN.name())) {
+            if (permission.role() == UserRole.ADMIN && !Objects.equals(ReqInfoContext.getReqInfo().getUser().getRole().getRoleId(), RoleEnum.ADMIN.getRole())) {
                 response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.getWriter().println(JsonUtil.toStr(ResVo.fail(StatusEnum.FORBID_ERROR)));
