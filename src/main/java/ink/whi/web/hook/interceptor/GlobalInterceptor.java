@@ -46,8 +46,6 @@ public class GlobalInterceptor implements AsyncHandlerInterceptor {
                 return false;
             }
 
-            System.out.println(permission.role().name());
-            System.out.println(ReqInfoContext.getReqInfo().getUser().getRole());
             // ALL
             if (permission == null || permission.role() == UserRole.ALL) {
                 return true;
