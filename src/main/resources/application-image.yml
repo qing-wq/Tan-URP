@@ -1,6 +1,6 @@
 image:
   abs-tmp-path: /tmp/tan-urp/
-  web-img-path: /image/
+  web-img-path: /images/
   tmp-upload-path: /tmp/tan-urp/
   cdn-host:
   oss:

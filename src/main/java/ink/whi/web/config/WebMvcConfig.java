@@ -14,6 +14,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         try {
+            // fixme：只适用windows
             registry.addResourceHandler("/images/**").addResourceLocations("file:D:\\tmp\\tan-urp\\image\\");
         } catch (Exception e) {
             e.printStackTrace();

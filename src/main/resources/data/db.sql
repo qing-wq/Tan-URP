@@ -2,6 +2,7 @@ create database if not exists `urp`;
 
 use urp;
 
+drop table if exists file;
 create table if not exists file
 (
     id          int unsigned auto_increment comment '业务主键'
@@ -17,6 +18,7 @@ create table if not exists file
 )
     comment 'file' collate = utf8mb4_unicode_ci;
 
+drop table if exists meeting;
 create table if not exists meeting
 (
     id          int unsigned auto_increment comment '业务主键'
@@ -35,6 +37,7 @@ create table if not exists meeting
 )
     comment '组会记录表' collate = utf8mb4_unicode_ci;
 
+drop table if exists project;
 create table if not exists project
 (
     id           int unsigned auto_increment comment '业务主键'
@@ -47,6 +50,7 @@ create table if not exists project
 )
     collate = utf8mb4_unicode_ci;
 
+drop table if exists user;
 create table if not exists user
 (
     id          int unsigned auto_increment comment '业务主键'
@@ -59,6 +63,7 @@ create table if not exists user
 )
     comment 'user' collate = utf8mb4_unicode_ci;
 
+drop table if exists user_info;
 create table if not exists user_info
 (
     id             int unsigned auto_increment comment '业务主键'
@@ -75,6 +80,6 @@ create table if not exists user_info
     comment 'user_info' collate = utf8mb4_unicode_ci;
 
 
-insert INTO user (id ,user_name, pass_word) value (1, 'admin', '8163863c634ceb460f1350d127cf121a');
+insert INTO user (id ,user_name, pass_word) value (1, 'admin', 'f0b473d637d2c5c6cedbcdd63b39d448');
 insert into user_info (user_id, user_info_name, student_id, grade, user_role)
 values (1, '谭老师', '', '', 2);
