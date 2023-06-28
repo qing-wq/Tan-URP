@@ -90,7 +90,7 @@ public class MeetingDao extends ServiceImpl<MeetingMapper, MeetingDO> {
         MeetingDO meetingDO = MeetingConverter.toDO(meeting);
         if (meeting.getMeetingId() == null) {
             // 保存会议
-            userDao.queryByUserId(meeting.getPublisher());  // 查询publisher是否存在
+            userDao.queryUserByUserId(meeting.getPublisher());  // 查询publisher是否存在
             if (meeting.getContent() == null) {
                 // 设置会议内容默认值
                 meetingDO.setContent("");

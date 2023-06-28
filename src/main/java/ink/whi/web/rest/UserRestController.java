@@ -164,7 +164,7 @@ public class UserRestController {
      * @param userId
      * @return
      */
-    @Permission(role = UserRole.ADMIN)
+    @Permission(role = UserRole.LEADER)
     @GetMapping(path = "del/{userId}")
     public ResVo<String> deleteUser(@PathVariable Long userId) {
         userDao.deleteUser(userId);

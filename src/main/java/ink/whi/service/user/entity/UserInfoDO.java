@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import ink.whi.api.model.dto.base.BaseDO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 
@@ -12,6 +13,7 @@ import java.io.Serial;
  * @Date: 2023/5/6
  */
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("user_info")
 public class UserInfoDO extends BaseDO {

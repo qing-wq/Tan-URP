@@ -15,6 +15,7 @@ import ink.whi.service.converter.UserConverter;
 import ink.whi.service.user.entity.UserDO;
 import ink.whi.service.user.entity.UserInfoDO;
 import ink.whi.web.vo.UserSaveReq;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ import java.util.Objects;
  * @author: qing
  * @Date: 2023/5/7
  */
+@Slf4j
 @Repository
 public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
 
@@ -58,13 +60,14 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
 
     private UserDO queryByUserName(String username) {
         LambdaQueryWrapper<UserDO> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(UserDO::getUserName, username)
-                .eq(UserDO::getDeleted, YesOrNoEnum.NO.getCode());
+        wrapper.eq(UserDO::getUserName, username);
+//                .eq(UserDO::getDeleted, YesOrNoEnum.NO.getCode());
         return userMapper.selectOne(wrapper);
     }
 
     /**
      * 保存或更新用户（管理员）
+     *
      * @param req
      * @return
      */
@@ -81,21 +84,28 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         user.setUserName(req.getUserName() == null ? req.getStudentId() : req.getUserName());
         String pwd = req.getPassword() == null ? req.getStudentId() : req.getPassword();
         user.setPassWord(userPwdEncoder.encode(pwd));
+        UserInfoDO userInfo = UserConverter.toDo(req);
 
         // 校验用户是否存在
+        // fixme: 这里包含了一个隐藏条件，学号必须是唯一的
+        // fixme: 因此如果创建了一个被删除过的用户，必须在原来的记录上修改，不符合规范，需要改正
         UserDO record = queryByUserName(user.getUserName());
         if (record == null) {
             // 用户不存在则创建
             userMapper.insert(user);
-            UserInfoDO userInfo = UserConverter.toDo(req);
             userInfo.setUserId(user.getId());
             save(userInfo);
             return userInfo.getId();
-        }else {
+        } else if (record.getDeleted() == YesOrNoEnum.YES.getCode()) {
+            user.setId(record.getId());
+            user.setDeleted(YesOrNoEnum.NO.getCode());
+            userMapper.updateById(user);
+            userInfo.setUserId(record.getId()).setDeleted(YesOrNoEnum.NO.getCode());
+            return updateByUserId(userInfo);
+        } else {
             // 用户存在则更新
             record.setPassWord(user.getPassWord());
             userMapper.updateById(user);
-            UserInfoDO userInfo = UserConverter.toDo(req);
             userInfo.setUserId(record.getId());
             return updateByUserId(userInfo);
         }
@@ -103,11 +113,12 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
 
     /**
      * 更新用户（普通用户）
+     *
      * @param req
      */
     public void updateUser(UserSaveReq req) {
         Long userId = ReqInfoContext.getReqInfo().getUserId();
-        UserDO record = queryByUserId(userId);
+        UserDO record = queryUserByUserId(userId);
         if (record == null) {
             throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, "账号不存在，请联系管理员");
         }
@@ -143,7 +154,7 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         return UserConverter.toDtoList(list);
     }
 
-    public UserDO queryByUserId(Long userId) {
+    public UserDO queryUserByUserId(Long userId) {
         UserDO record = userMapper.selectById(userId);
         if (record == null) {
             throw BusinessException.newInstance(StatusEnum.USER_NOT_EXISTS, userId);
@@ -154,14 +165,24 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
     @Transactional(rollbackFor = Exception.class)
     public void deleteUser(Long userId) {
         // user + user_info
-        UserDO userRecord = queryByUserId(userId);
-        userRecord.setDeleted(YesOrNoEnum.YES.getCode());
-        userMapper.updateById(userRecord);
-
-        UserInfoDO record = getById(userId);
+        UserInfoDO record = queryInfoByUserId(userId);
         if (record != null) {
+            if (record.getUserRole() == RoleEnum.ADMIN.getRole()) {
+                throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + userId);
+            }
+            log.warn("[WARN]用户：" + ReqInfoContext.getReqInfo().getUserId() + " 删除了用户：" + userId);
             record.setDeleted(YesOrNoEnum.YES.getCode());
             updateById(record);
         }
+
+        UserDO userRecord = queryUserByUserId(userId);
+        userRecord.setDeleted(YesOrNoEnum.YES.getCode());
+        userMapper.updateById(userRecord);
+    }
+
+    private UserInfoDO queryInfoByUserId(Long userId) {
+        return lambdaQuery().eq(UserInfoDO::getUserId, userId)
+                .eq(UserInfoDO::getDeleted, YesOrNoEnum.NO.getCode())
+                .one();
     }
 }
