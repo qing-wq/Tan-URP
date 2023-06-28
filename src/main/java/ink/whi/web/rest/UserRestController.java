@@ -4,6 +4,7 @@ import ink.whi.api.model.context.ReqInfoContext;
 import ink.whi.api.model.dto.BaseUserInfoDTO;
 import ink.whi.api.model.dto.FileDTO;
 import ink.whi.api.model.enums.RoleEnum;
+import ink.whi.api.model.exception.BusinessException;
 import ink.whi.api.model.exception.StatusEnum;
 import ink.whi.api.model.vo.ResVo;
 import ink.whi.api.permission.Permission;
@@ -25,6 +26,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户接口
@@ -104,6 +106,11 @@ public class UserRestController {
     @Permission(role = UserRole.LEADER)
     @PostMapping(path = "save")
     public ResVo<String> saveUser(@RequestBody UserSaveReq req) {
+        String role = RoleEnum.role(req.getUserRole()).name();
+        // 不允许创建管理员
+        if (Objects.equals(role, RoleEnum.ADMIN.name())) {
+            return ResVo.fail(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + req.getUserRole());
+        }
         userDao.saveUser(req);
         return ResVo.ok("ok");
     }

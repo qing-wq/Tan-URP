@@ -60,8 +60,8 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
 
     private UserDO queryByUserName(String username) {
         LambdaQueryWrapper<UserDO> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(UserDO::getUserName, username);
-//                .eq(UserDO::getDeleted, YesOrNoEnum.NO.getCode());
+        wrapper.eq(UserDO::getUserName, username)
+                .eq(UserDO::getDeleted, YesOrNoEnum.NO.getCode());
         return userMapper.selectOne(wrapper);
     }
 
@@ -73,41 +73,33 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
      */
     @Transactional(rollbackFor = Exception.class)
     public Long saveUser(UserSaveReq req) {
-        // user + user_info
-        String role = RoleEnum.role(req.getUserRole()).name();
-        if (Objects.equals(role, RoleEnum.ADMIN.name())) {
-            throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + req.getUserRole());
-        }
-
         UserDO user = new UserDO();
         // 默认账号密码为 学号：学号
-        user.setUserName(req.getUserName() == null ? req.getStudentId() : req.getUserName());
+        user.setUserName(req.getStudentId());
         String pwd = req.getPassword() == null ? req.getStudentId() : req.getPassword();
         user.setPassWord(userPwdEncoder.encode(pwd));
         UserInfoDO userInfo = UserConverter.toDo(req);
 
-        // 校验用户是否存在
-        // fixme: 这里包含了一个隐藏条件，学号必须是唯一的
-        // fixme: 因此如果创建了一个被删除过的用户，必须在原来的记录上修改，不符合规范，需要改正
-        UserDO record = queryByUserName(user.getUserName());
-        if (record == null) {
-            // 用户不存在则创建
+        if (req.getUserId() == null) {
+            // 创建用户
+            UserDO record = queryByUserName(req.getStudentId());
+            if (record != null) {
+                // 每个学号只能创建一个用户
+                throw BusinessException.newInstance(StatusEnum.USER_ALREADY_EXISTS);
+            }
             userMapper.insert(user);
-            userInfo.setUserId(user.getId());
+            Long userId = user.getId();
+            userInfo.setUserId(userId);
             save(userInfo);
-            return userInfo.getId();
-        } else if (record.getDeleted() == YesOrNoEnum.YES.getCode()) {
-            user.setId(record.getId());
-            user.setDeleted(YesOrNoEnum.NO.getCode());
-            userMapper.updateById(user);
-            userInfo.setUserId(record.getId()).setDeleted(YesOrNoEnum.NO.getCode());
-            return updateByUserId(userInfo);
+            return userId;
         } else {
-            // 用户存在则更新
-            record.setPassWord(user.getPassWord());
+            // 更新用户
+            Long userId = req.getUserId();
+            user.setId(userId);
             userMapper.updateById(user);
-            userInfo.setUserId(record.getId());
-            return updateByUserId(userInfo);
+            userInfo.setUserId(userId);
+            updateByUserId(userInfo);
+            return userId;
         }
     }
 
@@ -126,13 +118,12 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
         userMapper.updateById(record);
     }
 
-    private Long updateByUserId(UserInfoDO userInfo) {
+    private void updateByUserId(UserInfoDO userInfo) {
         UserInfoDO record = lambdaQuery().eq(UserInfoDO::getUserId, userInfo.getUserId())
                 .eq(UserInfoDO::getDeleted, YesOrNoEnum.NO.getCode())
                 .list().get(0);
         userInfo.setId(record.getId());
         updateById(userInfo);
-        return userInfo.getId();
     }
 
     public List<BaseUserInfoDTO> getUserList() {
@@ -170,7 +161,7 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
             if (record.getUserRole() == RoleEnum.ADMIN.getRole()) {
                 throw BusinessException.newInstance(StatusEnum.ILLEGAL_ARGUMENTS_MIXED, "操作非法：" + userId);
             }
-            log.warn("[WARN]用户：" + ReqInfoContext.getReqInfo().getUserId() + " 删除了用户：" + userId);
+            log.warn("[WARN] 用户：" + ReqInfoContext.getReqInfo().getUserId() + " 删除了用户：" + userId);
             record.setDeleted(YesOrNoEnum.YES.getCode());
             updateById(record);
         }
