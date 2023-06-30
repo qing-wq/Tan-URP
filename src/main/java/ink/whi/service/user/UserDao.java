@@ -128,7 +128,7 @@ public class UserDao extends ServiceImpl<UserInfoMapper, UserInfoDO> {
 
     public List<BaseUserInfoDTO> getUserList() {
         List<UserInfoDO> list = lambdaQuery().eq(UserInfoDO::getDeleted, YesOrNoEnum.NO.getCode())
-                .orderByAsc(UserInfoDO::getStudentId)
+                .orderByAsc(UserInfoDO::getStudentId)   // fixme: 排序规则待定
                 .list();
         return UserConverter.toDtoList(list);
     }

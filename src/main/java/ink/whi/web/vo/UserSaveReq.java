@@ -14,8 +14,10 @@ public class UserSaveReq implements Serializable {
     @Serial
     private static final long serialVersionUID = 793902321352322861L;
 
+    /**
+     * 用户id
+     */
     private Long userId;
-
     /**
      * 账号（不填默认为学号）
      */

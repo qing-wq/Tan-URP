@@ -1,6 +1,5 @@
 server:
   port: 8080
-  address: 0.0.0.0
   servlet:
     session:
       timeout: 5m # 设置session的有效期为五分钟
@@ -15,28 +14,23 @@ spring:
   main:
     allow-circular-references: true
   config:
-    import: application-image-win.yml
+    import: application-image.yml
   servlet:
     multipart:
-      max-file-size: 200MB
-      max-request-size: 500MB
+      max-file-size: 800MB
+      max-request-size: 900MB
 
 
 database:
   name: urp
 
 security:
-  salt: tan-urp
+  salt: Tan-Urp
 
 jwt:
-  key: Tan-SAI
+  key: key
 
 file:
   upload:
-#    meeting: /tmp/tan-urp/meeting/
-    meeting: D:\tmp\tan-urp\meeting\
-
-password:
-  default:
-    normal: 123456
-    leader: tan2021
+    meeting: /tmp/tan-urp/meeting/
+#    meeting: D:\tmp\tan-urp\meeting\
