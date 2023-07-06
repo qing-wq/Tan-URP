@@ -72,7 +72,6 @@ public class MeetingRestController extends PageHelper {
      * @param meeting
      * @return
      */
-    @Permission(role = UserRole.LEADER)
     @PostMapping(path = "save")
     public ResVo<Long> saveMeeting(@RequestBody MeetingSaveReq meeting) {
         Long meetingId = meetingDao.saveMeeting(meeting);
@@ -84,7 +83,6 @@ public class MeetingRestController extends PageHelper {
      * @param meetingId
      * @return
      */
-    @Permission(role = UserRole.LEADER)
     @GetMapping(path = "delete/{meetingId}")
     public ResVo<String> deleteMeeting(@PathVariable(name = "meetingId") Long meetingId) {
         meetingDao.deleteMeeting(meetingId);
